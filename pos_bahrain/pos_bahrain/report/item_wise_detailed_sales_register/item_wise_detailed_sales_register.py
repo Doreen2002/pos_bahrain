@@ -476,7 +476,7 @@ def get_items(filters, additional_query_columns):
         LEFT JOIN `tabItem Default`
                 ON (`tabItem Default`.parent = `tabSales Invoice Item`.item_code)
         WHERE `tabSales Invoice`.name = `tabSales Invoice Item`.parent and `tabItem Default`.company = `tabSales Invoice`.company
-            and `tabSales Invoice`.docstatus = 1 {1}
+            and `tabSales Invoice`.docstatus = 1 {1}  LIMIT 1
     """.format(additional_query_columns or '', conditions), filters, as_dict=1)  # nosec
 
     return query
