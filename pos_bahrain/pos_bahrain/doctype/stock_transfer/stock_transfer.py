@@ -17,6 +17,17 @@ DISPATCH = "Dispatch"
 RECEIVE = "Receive"
 
 
+@frappe.whitelist()
+def showReceive(branch):
+    branches = frappe.db.get_all("Branch Users", filters={"parent": branch}, pluck="branch_user")
+    if frappe.db.get_all ("Has Role", filters={"parent":frappe.session.user, "role":"System Manager"}, fields=['*']) != []:
+        return True
+    elif frappe.session.user in branches:
+        return True
+    else:
+        return False
+
+
 class StockTransfer(Document):
     def validate(self):
         user_branch = get_user_branch()
@@ -220,6 +231,7 @@ def _make_stock_entry(args):
             {
                 "doctype": "Stock Entry",
                 "purpose": "Material Transfer",
+                "stock_entry_type": "Stock Transfer",
                 "set_posting_time": 1,
             },
             args,
