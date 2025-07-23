@@ -92,5 +92,5 @@ def set_outstanding_pos_invoice(doc):
         frappe.db.set_value("Sales Invoice", doc.name, "status", "Paid")
 
 def fetch_item_tax_template(tax_type):
-    tax_rate = frappe.db.get_all("Item Tax Template Detail", filters={"parent": tax_type, fields=["*"])
+    tax_rate = frappe.db.get_all("Item Tax Template Detail", filters={"parent": tax_type}, fields=["*"])
     return {"tax_rate": tax_rate[0]["tax_rate"]}

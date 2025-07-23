@@ -36,6 +36,31 @@ def make_sales_return(source_name, target_doc=None):
     sales_return = make_sales_return(source_name, target_doc)
     return _prepend_returned_si(sales_return)
 
+def get_payments_against(doctype, names):
+    if not names:
+        return []
+    return frappe.db.sql(
+        """
+            SELECT
+                pe.name AS payment_name,
+                'Payment Entry' AS payment_doctype,
+                pe.posting_date AS posting_date,
+                pe.mode_of_payment AS mode_of_payment,
+                per.reference_doctype AS reference_doctype,
+                per.reference_name AS reference_name,
+                SUM(per.allocated_amount) AS paid_amount
+            FROM `tabPayment Entry Reference` AS per
+            LEFT JOIN `tabPayment Entry` AS pe ON
+                per.parent = pe.name
+            WHERE
+                pe.docstatus = 1 AND
+                per.reference_doctype = %(doctype)s AND
+                per.reference_name IN %(names)s
+            GROUP BY pe.name
+        """,
+        values={"doctype": doctype, "names": list(names)},
+        as_dict=1,
+    )
 
 def _prepend_returned_si(si):
     prepend_return_pos_name = frappe.db.get_single_value("POS Bahrain Settings", "prepend_return_pos_name")
