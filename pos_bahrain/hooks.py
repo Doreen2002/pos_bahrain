@@ -517,6 +517,7 @@ SalesInvoice.validate_pos_paid_amount = validate_pos_paid_amount_ov
 #auto repeat logic
 from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
 from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
+from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
 
 def custom_sales_on_recurring(self, reference_doc, auto_repeat_doc):
     for fieldname in ("c_form_applicable", "c_form_no", "write_off_amount"):
@@ -526,6 +527,11 @@ def custom_sales_on_recurring(self, reference_doc, auto_repeat_doc):
 
 def custom_purchase_on_recurring(self, reference_doc, auto_repeat_doc):
     self.due_date = self.posting_date
+
+
+def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
+	self.reference_date = self.posting_date
 	
 SalesInvoice.on_recurring = custom_sales_on_recurring
-PurchaseInvoice.on_recurring = custom_purchase_on_recurring
+PurchaseInvoice.on_recurring = custom_purchase_on_recurring	
+PaymentEntry.on_recurring = custom_payment_on_recurring
