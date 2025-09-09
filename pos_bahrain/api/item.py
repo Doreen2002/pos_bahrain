@@ -499,9 +499,13 @@ def get_standard_prices(item_code):
     if item_doc.taxes:
         for x in item_doc.taxes:
             item_tax_template = frappe.get_doc("Item Tax Template", x.item_tax_template)
+            item_tax_template_details = frappe.get_all("Item Tax Template Detail", filters={"parent":x.item_tax_template}, fields=['*'])
+            item_tax_account_details = frappe.get_all("Account", filters={"name":item_tax_template_details[0].tax_type }, fields=["*"]) if item_tax_template_details != [] else []
+            company = item_tax_account_details[0].company if item_tax_account_details != [] else ''
             tax_rate = 0
             for i in item_tax_template.taxes:
-                tax_rate += i.tax_rate
+                if company == frappe.defaults.get_user_default("company"):
+                    tax_rate += i.tax_rate
 
             # Initialize selling_price before the if statement
             if selling_price_list:
