@@ -1,4 +1,18 @@
 frappe.listview_settings['Sales Invoice'] = {
+  get_indicator: function(doc) {
+        // Check the status field
+        if(doc.status === "Paid") {
+            return [__("Paid"), "green", "status,=,Paid"];
+        } else if(doc.status === "Unpaid") {
+            return [__("Unpaid"), "red", "status,=,Unpaid"];
+        } else if(doc.status === "Overdue") {
+            return [__("Overdue"), "orange", "status,=,Overdue"];
+        } else if(doc.status === "Partly Paid") {
+            return [__("Partly Paid"), "blue", "status,=,Partly Paid"];
+        } else {
+            return [__(doc.status), "grey", ""];
+        }
+    },
   before_render: async function (listview) {
     await frappe.db
       .get_doc('Report', 'Daily Cash with Payment')
