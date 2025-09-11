@@ -108,7 +108,11 @@ const TaxesAndTotalsExtend = erpnext.taxes_and_totals.extend({
     
 });
 
-$.extend(
-	cur_frm.cscript,
+if(cur_frm != null )
+{
+    $.extend(
+   
+	 cur_frm.cscript ,
 	new TaxesAndTotalsExtend({frm: cur_frm}),
 );
+}
