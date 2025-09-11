@@ -49,7 +49,7 @@ def get_pos_profile(company, pos_profile=None, user=None):
     session_defaults = frappe.defaults.get_defaults()
     session_pos_profile = session_defaults.get("pos_profile")
     session_company = session_defaults.get("company")
-    frappe.log_error(session_pos_profile,title="pos profile from custom")
+    
 
 
     if session_pos_profile:
@@ -91,7 +91,7 @@ def get_pos_profile(company, pos_profile=None, user=None):
 
 @frappe.whitelist()
 def get_pos_data():
-	frappe.log_error("core code",title="core")
+	
 	doc = frappe.new_doc('Sales Invoice')
 	doc.is_pos = 1
 	pos_profile = get_pos_profile(doc.company) or {}

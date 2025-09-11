@@ -20,7 +20,7 @@ def custom_stock_ledger_created(self):
 
 
 def custom_cant_change(self):
-    frappe.log_error(title="Custom custom_cant_change",message= "Custom custom_cant_change")
+    
     if not self.get("__islocal"):
         fields = ("has_serial_no", "is_stock_item", "valuation_method", "has_batch_no")
 
