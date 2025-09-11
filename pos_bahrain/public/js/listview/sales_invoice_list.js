@@ -1,5 +1,12 @@
-frappe.listview_settings['Sales Invoice'] = {
-  before_render: async function (listview) {
+ 
+
+const original_before_render = frappe.listview_settings['Sales Invoice']["before_render"];
+
+frappe.listview_settings['Sales Invoice']["before_render"] =  async function (listview) {
+  if(original_before_render)
+  {
+     original_before_render(listview);
+  }
     await frappe.db
       .get_doc('Report', 'Daily Cash with Payment')
       .then((r) => {
@@ -29,5 +36,6 @@ frappe.listview_settings['Sales Invoice'] = {
         }
       })
       .catch((e) => console.log(e));
-  },
-};
+  };
+
+  
