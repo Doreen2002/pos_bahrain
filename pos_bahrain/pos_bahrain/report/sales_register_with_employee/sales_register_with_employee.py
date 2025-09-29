@@ -64,37 +64,37 @@ def _extend_columns(filters, columns):
 
 def _extend_data(filters, data):
     invoices = [x.get("invoice") for x in data]
-    get_employee_map = compose(
-        valmap(
-            lambda x: {
-                "sales_employee": x.get("pb_sales_employee"),
-                "sales_employee_name": x.get("pb_sales_employee_name"),
-            }
-        ),
-        valmap(first),
-        groupby("name"),
-        lambda: frappe.db.sql(
+    if not invoices:
+        employees = {}
+    else:
+        employee_rows = frappe.db.sql(
             """
             SELECT name, pb_sales_employee, pb_sales_employee_name FROM `tabSales Invoice`
             WHERE name IN %(invoices)s
-        """,
+            """,
             values={"invoices": invoices},
             as_dict=1,
-        ),
-    )
-    employees = get_employee_map() if invoices else {}
-    set_employee = compose(lambda x: merge(x, employees.get(x.get("invoice"))))
+        )
+        grouped = groupby("name", employee_rows)
+        firsts = valmap(first, grouped)
+        employees = valmap(
+            lambda x: {
+                "sales_employee": x.get("pb_sales_employee"),
+                "sales_employee_name": x.get("pb_sales_employee_name"),
+            },
+            firsts,
+        )
+
+    set_employee = lambda x: merge(x, employees.get(x.get("invoice"), {}))
 
     commission_rate = filters.get("commission_rate")
-    set_commission = compose(
-        lambda x: merge(
-            x,
-            {
-                "net_sales_commission": x.get(filters.net_amount_col, 0.00)
-                * frappe.utils.flt(commission_rate)
-                / 100
-            },
-        ),
+    set_commission = lambda x: merge(
+        x,
+        {
+            "net_sales_commission": x.get(filters.net_amount_col, 0.00)
+            * frappe.utils.flt(commission_rate)
+            / 100
+        },
     )
 
     make_row = compose(set_commission, set_employee)
