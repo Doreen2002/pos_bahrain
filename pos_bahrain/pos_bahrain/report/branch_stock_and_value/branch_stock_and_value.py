@@ -25,25 +25,33 @@ def execute(filters=None):
 	item_map = get_item_details(items, sle, filters.uom)
 	iwb_map = get_item_warehouse_batch_map(filters, sle)  
 	warehouse_list = get_warehouse_list(filters)
-	item_ageing = FIFOSlots(filters)
+	item_ageing = FIFOSlots(filters).generate()
 	data = []
 	item_balance = {}
 	item_value = {}
 
-	for (company, item, warehouse) in sorted(iwb_map):
-		if not item_map.get(item):  continue
+	for item_code, wh_map in iwb_map.items():
+		if not item_map.get(item_code):
+			continue
 
-		row = []
-		qty_dict = iwb_map[(company, item, warehouse)]
-		item_balance.setdefault((item, item_map[item]["item_group"]), [])
-		total_stock_value = 0.00
-		for wh in warehouse_list:
-			row += [qty_dict.bal_qty] if wh.name == warehouse else [0.00]
-			total_stock_value += qty_dict.bal_val if wh.name == warehouse else 0.00
+		for warehouse, batch_map in wh_map.items():
+			row = []
+			total_stock_value = 0.0
 
-		item_balance[(item, item_map[item]["item_group"])].append(row)
-		item_value.setdefault((item, item_map[item]["item_group"]),[])
-		item_value[(item, item_map[item]["item_group"])].append(total_stock_value)
+			for wh in warehouse_list:
+				if wh.name == warehouse:
+					
+					wh_qty = sum(batch["bal_qty"] for batch in batch_map.values())
+					wh_val = sum(batch["bal_value"] for batch in batch_map.values())
+					row.append(wh_qty)
+					total_stock_value += wh_val
+				else:
+					row.append(0.0)
+
+			
+			key = (item_code, item_map[item_code]["item_group"])
+			item_balance.setdefault(key, []).append(row)
+			item_value.setdefault(key, []).append(total_stock_value)
 
 
 	# sum bal_qty by item
