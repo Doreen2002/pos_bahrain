@@ -29,7 +29,7 @@ class AnalyticsExtended(Analytics):
             fields=[entity, entity_name, value_field, self.date_field],
             filters={
                 "docstatus": 1,
-                "company": self.filters.company,
+                "company": ['in', self.filters.company],
                 self.date_field: (
                     "between",
                     [self.filters.from_date, self.filters.to_date],
