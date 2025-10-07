@@ -1,4 +1,5 @@
-frappe.ui.form.on("POS Profile", "onload", function(frm) {
+frappe.ui.form.on("POS Profile",{
+	onload: function(frm) {
 	frm.call({
 		method: "pos_bahrain.doc_events.pos_profile.get_series",
 		callback: function(r) {
@@ -7,4 +8,8 @@ frappe.ui.form.on("POS Profile", "onload", function(frm) {
 			}
 		}
 	});
+},
+
+
 });
+
