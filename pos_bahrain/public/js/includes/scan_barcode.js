@@ -4,9 +4,11 @@ frappe.provide('pos_bahrain.scripts.extensions');
 
 ['Stock Entry', 'Sales Invoice', 'Purchase Invoice'].forEach(doctype => {
   frappe.ui.form.off(doctype, 'scan_barcode');
-  frappe.ui.form.on(
+    frappe.ui.form.on(
     doctype,
-    'scan_barcode',
-    pos_bahrain.scripts.extensions.scan_barcode
-  );
+    {
+    scan_barcode:function(frm){
+      pos_bahrain.scripts.extensions.scan_barcode
+    }
+});
 });
