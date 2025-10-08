@@ -50,7 +50,13 @@ frappe.ui.form.on('Purchase Invoice', {
     
 
     }
-  
+  cur_frm.fields_dict['items'].grid.get_field('uom').get_query = function(doc, cdt, cdn) {
+      const row = frappe.get_doc(cdt, cdn);
+      return {
+        query: 'pos_bahrain.api.item.query_uom',
+        filters: { item_code: row.item_code }
+      };
+    };
 
     
   },
