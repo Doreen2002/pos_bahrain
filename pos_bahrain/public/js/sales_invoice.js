@@ -122,7 +122,14 @@ function match_set_discount(frm, data){
 
 frappe.ui.form.on('Sales Invoice Item', {
   item_code: function (frm, cdt, cdn) {
-    get_total_stock_qty(frm, cdt, cdn)
+    get_total_stock_qty(frm, cdt, cdn);
+	cur_frm.fields_dict['items'].grid.get_field('uom').get_query = function(doc, cdt, cdn) {
+      const row = frappe.get_doc(cdt, cdn);
+      return {
+        query: 'pos_bahrain.api.item.query_uom',
+        filters: { item_code: row.item_code }
+      };
+    };
   },
 });
 
