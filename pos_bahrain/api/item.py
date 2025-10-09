@@ -331,26 +331,20 @@ def fetch_item_from_supplier_part_no(supplier, supplier_part_no):
 def query_uom(doctype, txt, searchfield, start, page_len, filters):
     if not filters.get("item_code"):
         return []
-    return frappe.db.sql(
-        """
-            SELECT uom
-            FROM `tabUOM Conversion Detail`
-            WHERE uom LIKE %(txt)s {fcond}
-            ORDER BY
-                IF(LOCATE(%(_txt)s, uom), LOCATE(%(_txt)s, uom), 99999)
-            LIMIT %(start)s, %(page_len)s
-        """.format(
-            fcond=get_filters_cond(
-                "UOM Conversion Detail", {"parent": filters.get("item_code")}, []
-            )
-        ),
-        values={
-            "txt": "%%%s%%" % txt,
-            "_txt": txt.replace("%", ""),
-            "start": start,
-            "page_len": page_len,
+     uoms = frappe.db.get_all(
+        "UOM Conversion Detail",
+        filters={
+            "parent": filters.get("item_code"),
+            "uom": ["like", f"%{txt}%"]
         },
+        fields=["uom"],
+        start=start,
+        page_length=page_len,
+        order_by=f"IF(LOCATE('{txt}', uom), LOCATE('{txt}', uom), 99999)"
     )
+
+    
+    return [[u["uom"]] for u in uoms]
 
 
 @frappe.whitelist()
