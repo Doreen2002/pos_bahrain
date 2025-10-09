@@ -331,19 +331,19 @@ def fetch_item_from_supplier_part_no(supplier, supplier_part_no):
 def query_uom(doctype, txt, searchfield, start, page_len, filters):
     if not filters.get("item_code"):
         return []
-     uoms = frappe.db.get_all(
-        "UOM Conversion Detail",
-        filters={
-            "parent": filters.get("item_code"),
-            "uom": ["like", f"%{txt}%"]
-        },
-        fields=["uom"],
-        start=start,
-        page_length=page_len,
-        order_by=f"IF(LOCATE('{txt}', uom), LOCATE('{txt}', uom), 99999)"
+    uoms = frappe.db.get_all(
+    "UOM Conversion Detail",
+    filters={
+        "parent": filters.get("item_code"),
+        "uom": ["like", f"%{txt}%"]
+    },
+    fields=["uom"],
+    start=start,
+    page_length=page_len,
+    order_by=f"IF(LOCATE('{txt}', uom), LOCATE('{txt}', uom), 99999)"
     )
 
-    
+
     return [[u["uom"]] for u in uoms]
 
 
