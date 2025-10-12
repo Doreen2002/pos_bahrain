@@ -123,15 +123,16 @@ def set_advances_ov(self):
         self.append("advances", advance_row)
 
 def get_advance_entries(self, include_unallocated=True):
+    party_account = []
     if self.doctype == "Sales Invoice":
-        party_account = self.debit_to
+        party_account.append(self.debit_to)
         party_type = "Customer"
         party = self.customer
         amount_field = "credit_in_account_currency"
         order_field = "sales_order"
         order_doctype = "Sales Order"
     else:
-        party_account = self.credit_to
+        party_account.append(self.credit_to)
         party_type = "Supplier"
         party = self.supplier
         amount_field = "debit_in_account_currency"
