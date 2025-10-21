@@ -2,6 +2,7 @@ import frappe
 from frappe.model.mapper import get_mapped_doc
 from erpnext.controllers.accounts_controller import get_advance_payment_entries,get_advance_journal_entries
 from frappe.utils import flt
+from frappe import _
 # from erpnext.accounts.doctype.payment_entry.payment_entry import build_gl_map
 
 # Customer = Cost Center & Set Cost Center
