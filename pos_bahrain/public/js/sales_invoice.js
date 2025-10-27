@@ -7,6 +7,7 @@ frappe.ui.form.on('Sales Invoice', {
   
   
   },
+
   refresh: function (frm) {
     get_employee(frm);
     _create_custom_buttons(frm);
@@ -33,6 +34,15 @@ frappe.ui.form.on('Sales Invoice', {
   validate: function(frm){
     set_discount(frm)
     check_duplicate(frm);
+    frappe.call({
+      method:"pos_bahrain.doc_events.sales_invoice.update_batch_qty",
+      args:{
+        doc:frm.doc
+      },
+      callback:function(r){
+        
+      }
+    })
   },
  pb_use_credit_if_available: function(frm)
   {
@@ -147,6 +157,7 @@ frappe.ui.form.on('Sales Invoice Item', {
     get_total_stock_qty(frm, cdt, cdn);
 	
   },
+  
 });
 
 function check_duplicate(frm) {
