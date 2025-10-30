@@ -27,6 +27,8 @@ def get_static_columns():
         {"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 100},
         {"label": _("Standard Selling Price"), "fieldname": "selling_price", "fieldtype": "Currency", "width": 100},
         {"label": _("Standard Buying Price"), "fieldname": "buying_price", "fieldtype": "Currency", "width": 100},
+        {"label": _("WholeSale Price"), "fieldname": "wholesale_price", "fieldtype": "Currency", "width": 100},
+        {"label": _("Landed Cost"), "fieldname": "landed_cost", "fieldtype": "Currency", "width": 100},
         {"label": _("Valuation Rate"), "fieldname": "valuation_rate", "fieldtype": "Currency", "width": 100},
         {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
     ]
@@ -93,6 +95,18 @@ def get_static_data(filters):
                 AND tsle.warehouse = tw.name 
                 AND tsle.posting_date BETWEEN %s AND %s 
                 ORDER BY tsle.posting_date DESC LIMIT 1),0) AS qty,
+                 IFNULL((SELECT tsle.valuation_rate 
+                FROM `tabStock Ledger Entry` tsle 
+                WHERE tsle.item_code = ti.name 
+                AND tsle.warehouse = tw.name 
+                AND tsle.posting_date BETWEEN %s AND %s 
+                ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS landed_cost, 
+            IFNULL((SELECT tsle.incoming_rate 
+                FROM `tabStock Ledger Entry` tsle 
+                WHERE tsle.item_code = ti.name 
+                AND tsle.warehouse = tw.name 
+                AND tsle.posting_date BETWEEN %s AND %s 
+                ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS wholesale_price,  
             IFNULL((SELECT tsle.valuation_rate 
                 FROM `tabStock Ledger Entry` tsle 
                 WHERE tsle.item_code = ti.name 
@@ -124,7 +138,7 @@ def get_static_data(filters):
 
     data = frappe.db.sql(sql_query, 
                          (filters.get('from_date'), filters.get('date'), 
-                          filters.get('from_date'), filters.get('date')), 
+                          filters.get('from_date'), filters.get('date'),filters.get('from_date'), filters.get('date'),filters.get('from_date'), filters.get('date')), 
                          as_dict=True)
     return data
 

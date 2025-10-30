@@ -19,7 +19,19 @@ def set_discount_on_return(doc):
     if isinstance(doc,str):
         doc = frappe.get_doc('Sales Invoice', doc)
         return doc  
-            
+import json 
+
+@frappe.whitelist()
+def update_batch_qty(doc):
+    doc = json.loads(doc)
+    if not doc.get("is_return"):
+        for item in doc.get("items"):
+            if item.get("serial_and_batch_bundle"):
+                qty = item.get("qty") * -1
+                name = frappe.db.get_all("Serial and Batch Entry", filters={"parent":item.get("serial_and_batch_bundle")}, fields=["name"])
+                if len(name) > 0:
+                    frappe.db.set_value("Serial and Batch Entry", name[0]['name'], "qty", qty)
+
 def validate(doc, method):
     # if (
     #     doc.is_pos
