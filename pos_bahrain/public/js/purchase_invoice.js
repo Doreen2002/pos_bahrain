@@ -1,6 +1,7 @@
 frappe.ui.form.on('Purchase Invoice Item', {
     item_code: function (frm, cdt, cdn) {
         console.log("test")
+        set_query_for_batch_no(frm);
         get_total_stock_qty(frm, cdt, cdn)
     },
 });
@@ -56,7 +57,7 @@ frappe.ui.form.on('Purchase Invoice', {
       
     },
   
-    update_stock: function(frm)
+    update_stock: function(frm,cdt, cdn)
     {
       if (frm.doc.update_stock == 1 && frm.doc.is_return == 1)
       {
@@ -83,3 +84,27 @@ frappe.ui.form.on('Purchase Invoice', {
    
   
   });
+
+
+function set_query_for_batch_no(frm)
+{
+  if (frm.doc.update_stock == 1 && frm.doc.is_return == 1)
+      {
+        frm.set_query("batch_no", "items", function(doc, cdt, cdn) {
+          let d = locals[cdt][cdn];
+          return {
+            query:"pos_bahrain.doc_events.purchase_invoice.get_batch_no",
+          "filters": {
+            'item_code': d.item_code,
+            'warehouse':d.warehouse,
+            'posting_date':frm.doc.posting_date,
+            'is_return_invoice': frm.doc.is_return          
+          },
+          
+        }
+        
+        })
+      
+  
+      }
+}
