@@ -73,31 +73,31 @@ def calculate_outstanding_amount_ov(self):
 			if self.doc.doctype == 'Sales Invoice' and self.doc.get('is_pos') and self.doc.get('is_return') and self.doc.get('ignore_payments_for_return'):
 				self.update_paid_amount_for_return(self.doc.total_amount_to_pay)
 def update_paid_amount_for_return_ov(self, total_amount_to_pay):
-		existing_amount = 0
+	existing_amount = 0
 
-		for payment in self.doc.payments:
-			existing_amount += payment.amount
+	for payment in self.doc.payments:
+		existing_amount += payment.amount
 
-		# do not override user entered amount if equal to total_amount_to_pay
-		if existing_amount != total_amount_to_pay:
-			default_mode_of_payment = frappe.db.get_value('Sales Invoice Payment',
-				{'parent': self.doc.pos_profile, 'default': 1},
-				['mode_of_payment', 'type', 'account'], as_dict=1)
+	# do not override user entered amount if equal to total_amount_to_pay
+	if existing_amount != total_amount_to_pay:
+		default_mode_of_payment = frappe.db.get_value('Sales Invoice Payment',
+			{'parent': self.doc.pos_profile, 'default': 1},
+			['mode_of_payment', 'type', 'account'], as_dict=1)
 
-			self.doc.payments = []
+		self.doc.payments = []
 
-			if default_mode_of_payment:
-				self.doc.append('payments', {
-					'mode_of_payment': default_mode_of_payment.mode_of_payment,
-					'type': default_mode_of_payment.type,
-					'account': default_mode_of_payment.account,
-					'amount': total_amount_to_pay
-				})
-			else:
-				self.doc.is_pos = 0
-				self.doc.pos_profile = ''
+		if default_mode_of_payment and self.pull_mop_from_original_invoice != 1:
+			self.doc.append('payments', {
+				'mode_of_payment': default_mode_of_payment.mode_of_payment,
+				'type': default_mode_of_payment.type,
+				'account': default_mode_of_payment.account,
+				'amount': total_amount_to_pay
+			})
+		else:
+			self.doc.is_pos = 0
+			self.doc.pos_profile = ''
 
-		self.calculate_paid_amount()
+	self.calculate_paid_amount()
 def calculate_outstanding_amount_ov(doc, change_amount=None):
 	grand_total = doc.rounded_total or doc.grand_total
 	if doc.party_account_currency == doc.currency:
