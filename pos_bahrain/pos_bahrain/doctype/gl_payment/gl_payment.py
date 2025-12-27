@@ -38,6 +38,16 @@ class GLPayment(AccountsController):
             self._set_remarks()
         self._make_gl_entries()
 
+    def on_recurring(self, reference_doc, auto_repeat_doc):
+        from frappe.utils import today
+        account = return_account_type(self)
+        if account == "Bank":
+            self.reference_no = reference_doc.get("reference_no")
+            self.reference_date = today()
+        else:
+            self.reference_no = ""
+            self.reference_date = None
+
     def on_cancel(self):
         self._make_gl_entries(cancel=1)
         gl_entry = frappe.db.get_list("GL Entry", filters={"voucher_no": self.name})
@@ -120,3 +130,11 @@ def get_direction(payment_type, reverse=False):
     if payment_type == "Incoming":
         return "debit" if not reverse else "credit"
     return "credit" if not reverse else "debit"
+
+
+def return_account_type(self):
+    account_type = frappe.db.get_value(
+    "Account", self.payment_account, "account_type"
+    )
+    return account_type
+    

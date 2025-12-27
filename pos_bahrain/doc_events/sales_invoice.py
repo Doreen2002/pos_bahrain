@@ -31,7 +31,9 @@ def update_batch_qty(doc):
                 name = frappe.db.get_all("Serial and Batch Entry", filters={"parent":item.get("serial_and_batch_bundle")}, fields=["name"])
                 if len(name) > 0:
                     frappe.db.set_value("Serial and Batch Entry", name[0]['name'], "qty", qty)
-
+def before_insert(doc, method):
+    if doc.auto_repeat:
+        doc.delivery_date = doc.posting_date
 def validate(doc, method):
     # if (
     #     doc.is_pos
