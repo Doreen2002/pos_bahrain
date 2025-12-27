@@ -375,6 +375,7 @@ doc_events = {
         "before_cancel": "pos_bahrain.doc_events.sales_order.before_cancel",
     },
     "Sales Invoice": {
+		"before_insert": "pos_bahrain.doc_events.sales_invoice.before_insert",
         "validate": "pos_bahrain.doc_events.sales_invoice.validate",
         "before_save": "pos_bahrain.doc_events.sales_invoice.before_save",
         "on_submit": "pos_bahrain.doc_events.sales_invoice.on_submit",
@@ -472,7 +473,7 @@ to enable the user to cancel purchase receipt
 
 '''
 from erpnext.controllers.stock_controller import StockController
-# import frappe
+from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
 
 def delete_auto_created_batches_override(self):
 	import frappe
@@ -496,13 +497,27 @@ def delete_auto_created_batches_override(self):
 		{'reference_name': self.name, 'reference_doctype': self.doctype}):
 		frappe.delete_doc("Batch", data.name)
 
+def custom_purchase_invoice_on_recurring(self, reference_doc, auto_repeat_doc):
+		self.due_date = None
+		self.bill_no = None
+
+
+
+
+
 StockController.delete_auto_created_batches = delete_auto_created_batches_override
+
+
+PurchaseInvoice.on_recurring = custom_purchase_invoice_on_recurring
+
+
 
 from erpnext.controllers.accounts_controller import AccountsController as _AccountsController
 # from erpnext.accounts import utils
 from erpnext.controllers import sales_and_purchase_return as _sales_and_purchase_return
 from erpnext.controllers import taxes_and_totals as _taxes_and_totals
 from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
+from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
 from pos_bahrain.api.sales_invoice import set_advances_ov,get_advance_entries,reconcile_against_document_ov,update_against_document_in_jv_ov,validate_pos_paid_amount_ov
 from pos_bahrain.api.sales_and_purchase_return import set_missing_values
 from pos_bahrain.api.taxes_and_totals import calculate_change_amount,calculate_write_off_amount,update_paid_amount_for_return_ov
@@ -512,3 +527,5 @@ _AccountsController.update_against_document_in_jv = update_against_document_in_j
 _taxes_and_totals.calculate_write_off_amount = calculate_write_off_amount
 # _taxes_and_totals.update_paid_amount_for_return = update_paid_amount_for_return_ov
 SalesInvoice.validate_pos_paid_amount = validate_pos_paid_amount_ov
+
+
