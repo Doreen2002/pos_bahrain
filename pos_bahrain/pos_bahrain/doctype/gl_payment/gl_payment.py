@@ -37,7 +37,16 @@ class GLPayment(AccountsController):
         if not self.remarks:
             self._set_remarks()
         self._make_gl_entries()
-
+        def on_recurring(self, reference_doc, auto_repeat_doc):
+        from frappe.utils import today
+        account = return_account_type(self)
+        if account == "Bank":
+            self.reference_no = reference_doc.get("reference_no")
+            self.reference_date = today()
+        else:
+            self.reference_no = ""
+            self.reference_date = None
+            
     def on_cancel(self):
         self.ignore_linked_doctypes = (
             "GL Entry",

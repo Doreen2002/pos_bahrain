@@ -519,14 +519,18 @@ from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
 from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
 from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
 
+from frappe.utils import today
+
 def custom_sales_on_recurring(self, reference_doc, auto_repeat_doc):
     for fieldname in ("c_form_applicable", "c_form_no", "write_off_amount"):
         self.set(fieldname, reference_doc.get(fieldname))
-
-    self.due_date = self.posting_date
+    self.posting_date = today()
+    self.due_date = today()
+    self..delivery_date = today()
 
 def custom_purchase_on_recurring(self, reference_doc, auto_repeat_doc):
     self.due_date = self.posting_date
+    self.bill_no = None
 
 
 def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
