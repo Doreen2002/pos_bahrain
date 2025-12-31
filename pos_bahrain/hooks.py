@@ -501,16 +501,10 @@ def custom_purchase_invoice_on_recurring(self, reference_doc, auto_repeat_doc):
 		self.due_date = None
 		self.bill_no = None
 
-
-
-
-
 StockController.delete_auto_created_batches = delete_auto_created_batches_override
 
 
 PurchaseInvoice.on_recurring = custom_purchase_invoice_on_recurring
-
-
 
 from erpnext.controllers.accounts_controller import AccountsController as _AccountsController
 # from erpnext.accounts import utils
@@ -528,4 +522,8 @@ _taxes_and_totals.calculate_write_off_amount = calculate_write_off_amount
 # _taxes_and_totals.update_paid_amount_for_return = update_paid_amount_for_return_ov
 SalesInvoice.validate_pos_paid_amount = validate_pos_paid_amount_ov
 
-
+from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
+def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
+    self.reference_date = self.posting_date
+	
+PaymentEntry.on_recurring = custom_payment_on_recurring
