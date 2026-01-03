@@ -25,7 +25,7 @@ class GLPayment(AccountsController):
                 )
             )
 
-        if account_type == "Bank":
+        if account_type == "Bank" and not self.auto_repeat:
             if not self.reference_no or not self.reference_date:
                 frappe.throw(
                     frappe._(
@@ -39,12 +39,7 @@ class GLPayment(AccountsController):
         self._make_gl_entries()
 
     def on_recurring(self, reference_doc, auto_repeat_doc):
-        from frappe.utils import today
-        account = return_account_type(self)
-        if account == "Bank":
-            self.reference_no = reference_doc.get("reference_no")
-            self.reference_date = today()
-        else:
+        if self.auto_repeat:
             self.reference_no = ""
             self.reference_date = None
 
