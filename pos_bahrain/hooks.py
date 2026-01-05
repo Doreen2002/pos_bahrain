@@ -395,7 +395,10 @@ doc_events = {
             "pos_bahrain.doc_events.purchase_invoice.before_validate",
             "pos_bahrain.doc_events.purchase_invoice.before_save",
         ],
-        "on_submit": "pos_bahrain.doc_events.purchase_receipt.set_batch_references",
+        "on_submit": [
+            "pos_bahrain.doc_events.purchase_receipt.set_batch_references",
+			"pos_bahrain.doc_events.purchase_invoice.before_submit",
+        ]
     },
     "Payment Entry": {
         "before_save": "pos_bahrain.doc_events.payment_entry.before_save"

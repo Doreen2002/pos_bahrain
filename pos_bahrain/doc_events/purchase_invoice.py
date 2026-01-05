@@ -12,6 +12,13 @@ def before_validate(doc, method):
     set_or_create_batch(doc, method)
 
        
+def before_submit(doc,method):
+    settings = frappe.get_single('POS Bahrain Settings')
+    if settings.validate_duplicate_supplier_invoice_numbers:
+        if frappe.db.exists("Purchase Invoice", {"bill_no": doc.bill_no, "name": ["!=", doc.name], "docstatus":['!=', 2]}):
+            frappe.throw(
+                frappe._("Purchase Invoice with Supplier Invoice No {0} already exists").format(doc.bill_no)
+            )
 
 
 def before_save(doc, method):
