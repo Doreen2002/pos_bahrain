@@ -42,6 +42,7 @@ class GLPayment(AccountsController):
         if self.auto_repeat:
             self.reference_no = ""
             self.reference_date = None
+            self.clearance_date = None
 
     def on_cancel(self):
         self._make_gl_entries(cancel=1)
