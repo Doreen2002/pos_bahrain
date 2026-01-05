@@ -16,6 +16,7 @@
      "show_sales_employee",
      "disable_standard_pf",
      "enable_pos_log",
+     "validate_duplicate_supplier_invoice_numbers",
      "default_supplier_items_limit",
      "price_list_section",
      "apply_offer_pricelist",
@@ -509,7 +510,13 @@
       "fieldname": "incentive_slab",
       "fieldtype": "Table",
       "options": "Pos Bahrain Incentive Slab"
-     }
+     },
+     {
+   "default": "0",
+   "fieldname": "validate_duplicate_supplier_invoice_numbers",
+   "fieldtype": "Check",
+   "label": "Validate Duplicate Supplier Invoice Numbers (Purchase Invoice)"
+  }
     ],
     "issingle": 1,
     "modified": "2024-03-11 11:09:58.297235",
