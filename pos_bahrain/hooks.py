@@ -528,5 +528,6 @@ SalesInvoice.validate_pos_paid_amount = validate_pos_paid_amount_ov
 from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
 def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
     self.reference_date = self.posting_date
+    self.clearance_date = None
 	
 PaymentEntry.on_recurring = custom_payment_on_recurring
