@@ -188,12 +188,12 @@ def get_payment_entries(doc, method):
         for row in payment_entries:
             doc.append("payment_entries", row)
 
-        doc.total_amount += sum(
-            [
-                frappe.utils.flt(x.get("debit", 0)) - frappe.utils.flt(x.get("credit", 0))
-                for x in gl_payments
-            ]
-        )
+        # doc.total_amount += sum(
+        #     [
+        #         frappe.utils.flt(x.get("debit", 0)) - frappe.utils.flt(x.get("credit", 0))
+        #         for x in gl_payments
+        #     ]
+        # )
     if not doc.include_reconciled_entries:
         gl_payments=gl_payments1   
         payment_entries = sorted(
@@ -206,12 +206,12 @@ def get_payment_entries(doc, method):
         for row in payment_entries:
             doc.append("payment_entries", row)
 
-        doc.total_amount += sum(
-            [
-                frappe.utils.flt(x.get("debit", 0)) - frappe.utils.flt(x.get("credit", 0))
-                for x in gl_payments
-            ]
-        )
+        # doc.total_amount += sum(
+        #     [
+        #         frappe.utils.flt(x.get("debit", 0)) - frappe.utils.flt(x.get("credit", 0))
+        #         for x in gl_payments
+        #     ]
+        # )
 
 
 def update_clearance_date(doc, method):
