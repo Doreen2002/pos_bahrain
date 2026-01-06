@@ -532,6 +532,7 @@ def custom_purchase_on_recurring(self, reference_doc, auto_repeat_doc):
 
 def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
 	self.reference_date = self.posting_date
+    self.clearance_date = None
 	
 SalesInvoice.on_recurring = custom_sales_on_recurring
 PurchaseInvoice.on_recurring = custom_purchase_on_recurring	
