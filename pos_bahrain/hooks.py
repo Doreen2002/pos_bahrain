@@ -371,6 +371,7 @@ doc_events = {
         "before_cancel": "pos_bahrain.doc_events.sales_order.before_cancel",
     },
     "Sales Invoice": {
+        "before_insert": "pos_bahrain.doc_events.sales_invoice.before_insert",
         "validate": "pos_bahrain.doc_events.sales_invoice.validate",
         "before_save": "pos_bahrain.doc_events.sales_invoice.before_save",
         "on_submit": "pos_bahrain.doc_events.sales_invoice.on_submit",
@@ -532,6 +533,7 @@ def custom_purchase_on_recurring(self, reference_doc, auto_repeat_doc):
 
 def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
 	self.reference_date = self.posting_date
+    self.clearance_date = None
 	
 SalesInvoice.on_recurring = custom_sales_on_recurring
 PurchaseInvoice.on_recurring = custom_purchase_on_recurring	
