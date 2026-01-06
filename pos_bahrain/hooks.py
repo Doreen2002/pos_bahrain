@@ -524,7 +524,7 @@ def custom_sales_on_recurring(self, reference_doc, auto_repeat_doc):
         self.set(fieldname, reference_doc.get(fieldname))
     self.posting_date = today()
     self.due_date = today()
-    self..delivery_date = today()
+    self.delivery_date = today()
 
 def custom_purchase_on_recurring(self, reference_doc, auto_repeat_doc):
     self.due_date = self.posting_date
