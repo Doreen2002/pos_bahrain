@@ -392,11 +392,16 @@ doc_events = {
             "pos_bahrain.doc_events.purchase_invoice.before_save",
 
         ],
+		"before_insert":
+		[
+			"pos_bahrain.doc_events.purchase_invoice.custom_purchase_on_recurring"
+        ],
 	
         "on_submit":[ "pos_bahrain.doc_events.purchase_receipt.set_batch_references","pos_bahrain.doc_events.purchase_invoice.before_submit",]
     },
     "Payment Entry": {
-        "before_save": "pos_bahrain.doc_events.payment_entry.before_save"
+        "before_save": "pos_bahrain.doc_events.payment_entry.before_save",
+		"before_insert":"pos_bahrain.doc_events.payment_entry.custom_payment_on_recurring"
     },
     "Stock Entry": {
         "before_save": "pos_bahrain.doc_events.stock_entry.before_validate",
@@ -517,24 +522,4 @@ from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
 from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import PurchaseInvoice
 from erpnext.accounts.doctype.payment_entry.payment_entry import PaymentEntry
 
-from frappe.utils import today
 
-def custom_sales_on_recurring(self, reference_doc, auto_repeat_doc):
-    for fieldname in ("c_form_applicable", "c_form_no", "write_off_amount"):
-        self.set(fieldname, reference_doc.get(fieldname))
-    self.posting_date = today()
-    self.due_date = today()
-    self.delivery_date = today()
-
-def custom_purchase_on_recurring(self, reference_doc, auto_repeat_doc):
-    self.due_date = self.posting_date
-    self.bill_no = None
-
-
-def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
-	self.reference_date = self.posting_date
-	self.clearance_date = None
-	
-SalesInvoice.on_recurring = custom_sales_on_recurring
-PurchaseInvoice.on_recurring = custom_purchase_on_recurring	
-PaymentEntry.on_recurring = custom_payment_on_recurring

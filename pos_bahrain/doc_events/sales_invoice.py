@@ -111,9 +111,11 @@ def before_cancel(doc, method):
     je_doc = frappe.get_doc("Journal Entry", parent)
     je_doc.cancel()
 
-def before_insert(doc, method):
+def before_insert(doc, method=None):
     if doc.auto_repeat:
-        doc.delivery_date = doc.posting_date
+        doc.posting_date = today()
+        doc.due_date = today()
+        doc.delivery_date = today()
 
 def on_cancel(doc, method):
     gl_entries_cancel(doc)

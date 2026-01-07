@@ -4,8 +4,12 @@
 
 from __future__ import unicode_literals
 import frappe
-from frappe.utils import nowtime
+from frappe.utils import nowtime, today
 
+def custom_payment_on_recurring(doc,method=None):
+    if doc.auto_repeat: 
+        doc.reference_date = today()
+        doc.clearance_date = None
 
 def before_save(doc, method):
     if not doc.pb_posting_time:
