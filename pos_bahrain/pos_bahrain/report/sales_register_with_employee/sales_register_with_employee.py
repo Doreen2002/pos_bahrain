@@ -63,13 +63,13 @@ def _extend_columns(filters, columns):
 
 
 def _extend_data(filters, data):
-    invoices = [x.get("invoice") for x in data]
+    invoices = [x.get("voucher_no") for x in data]
     if not invoices:
         employees = {}
     else:
         employee_rows = frappe.db.sql(
             """
-            SELECT name, pb_sales_employee, pb_sales_employee_name FROM `tabSales Invoice`
+            SELECT name, pb_sales_person, pb_sales_person_name FROM `tabSales Invoice`
             WHERE name IN %(invoices)s
             """,
             values={"invoices": invoices},
@@ -79,13 +79,13 @@ def _extend_data(filters, data):
         firsts = valmap(first, grouped)
         employees = valmap(
             lambda x: {
-                "sales_employee": x.get("pb_sales_employee"),
-                "sales_employee_name": x.get("pb_sales_employee_name"),
+                "sales_employee": x.get("pb_sales_person"),
+                "sales_employee_name": x.get("pb_sales_person_name"),
             },
             firsts,
         )
 
-    set_employee = lambda x: merge(x, employees.get(x.get("invoice"), {}))
+    set_employee = lambda x: merge(x, employees.get(x.get("voucher_no"), {}))
 
     commission_rate = filters.get("commission_rate")
     set_commission = lambda x: merge(
