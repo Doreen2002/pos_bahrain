@@ -41,6 +41,6 @@ def after_install():
             "insert_after": field.get("insert_after"),
             "options": field.get("options"),
             "is_system_generated":0,
-            "module": "pos",
+            "module": "Pos Bahrain",
             })
     frappe.db.commit()
