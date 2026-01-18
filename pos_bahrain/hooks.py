@@ -65,6 +65,9 @@ doctype_js = {
         "public/js/includes/discount_percentage.js",
         # "public/js/includes/salesinvoicecontroller.js",
     ],
+	# "POS Invoice":[
+	# 	"public/js/pos_invoice.js",
+    # ],
     "Sales Order": [
         "public/js/alternate_discount.js",
         "public/js/price_list.js",
@@ -341,7 +344,7 @@ fixtures = [
 # ------------
 
 # before_install = "pos_bahrain.install.before_install"
-# after_install = "pos_bahrain.install.after_install"
+after_install = "pos_bahrain.install.after_install"
 
 # Desk Notifications
 # ------------------
@@ -374,8 +377,12 @@ doc_events = {
         "on_submit": "pos_bahrain.doc_events.sales_order.on_submit",
         "before_cancel": "pos_bahrain.doc_events.sales_order.before_cancel",
     },
+	# "POS Invoice":
+	# {
+    #     "before_insert": ["pos_bahrain.doc_events.sales_invoice.set_naming_series_from_pos_profile"]
+    # },
     "Sales Invoice": {
-		"before_insert": "pos_bahrain.doc_events.sales_invoice.before_insert",
+		"before_insert": ["pos_bahrain.doc_events.sales_invoice.before_insert", "pos_bahrain.doc_events.sales_invoice.set_naming_series_from_pos_profile"],
         "validate": "pos_bahrain.doc_events.sales_invoice.validate",
         "before_save": "pos_bahrain.doc_events.sales_invoice.before_save",
         "on_submit": "pos_bahrain.doc_events.sales_invoice.on_submit",

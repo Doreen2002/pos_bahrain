@@ -21,6 +21,12 @@ def set_discount_on_return(doc):
         return doc  
 import json 
 
+def set_naming_series_from_pos_profile(doc, method):
+    if doc.is_pos and doc.pos_profile:
+        pos_profile = frappe.get_doc("POS Profile", doc.pos_profile)
+        if pos_profile.naming_series:
+            doc.naming_series = pos_profile.naming_series
+
 @frappe.whitelist()
 def update_batch_qty(doc):
     doc = json.loads(doc)

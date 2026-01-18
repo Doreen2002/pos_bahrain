@@ -2,10 +2,8 @@
 // For license information, please see license.txt
 /* eslint-disable */
  
-frappe.require("assets/erpnext/js/financial_statements.js", function () {
-	frappe.query_reports["Profit & Loss Detailed Report"] = $.extend({}, erpnext.financial_statements);
-
-	erpnext.utils.add_dimensions("Profit & Loss Detailed Report", 10);
+frappe.query_reports["Profit & Loss Detailed Report"] = $.extend({}, erpnext.financial_statements);
+erpnext.utils.add_dimensions("Profit & Loss Detailed Report", 10);
 
 	// frappe.query_reports["Profit & Loss Detailed Report"]["filters"].push({
 	// 	fieldname: "selected_view",
@@ -20,4 +18,4 @@ frappe.require("assets/erpnext/js/financial_statements.js", function () {
 	// 	reqd: 1,
 	// });
 	 
-});
+
