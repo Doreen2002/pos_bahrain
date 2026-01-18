@@ -65,9 +65,9 @@ doctype_js = {
         "public/js/includes/discount_percentage.js",
         # "public/js/includes/salesinvoicecontroller.js",
     ],
-	"POS Invoice":[
-		"public/js/pos_invoice.js",
-    ],
+	# "POS Invoice":[
+	# 	"public/js/pos_invoice.js",
+    # ],
     "Sales Order": [
         "public/js/alternate_discount.js",
         "public/js/price_list.js",
@@ -377,10 +377,10 @@ doc_events = {
         "on_submit": "pos_bahrain.doc_events.sales_order.on_submit",
         "before_cancel": "pos_bahrain.doc_events.sales_order.before_cancel",
     },
-	"POS Invoice":
-	{
-        "before_insert": ["pos_bahrain.doc_events.sales_invoice.set_naming_series_from_pos_profile"]
-    },
+	# "POS Invoice":
+	# {
+    #     "before_insert": ["pos_bahrain.doc_events.sales_invoice.set_naming_series_from_pos_profile"]
+    # },
     "Sales Invoice": {
 		"before_insert": ["pos_bahrain.doc_events.sales_invoice.before_insert", "pos_bahrain.doc_events.sales_invoice.set_naming_series_from_pos_profile"],
         "validate": "pos_bahrain.doc_events.sales_invoice.validate",
