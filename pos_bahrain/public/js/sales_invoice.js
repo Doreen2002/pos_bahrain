@@ -5,9 +5,7 @@ frappe.ui.form.on('Sales Invoice', {
   is_pos: function(frm) { 
     setTimeout(() => { set_series(frm); }, 500); 
   },
-  customer:function(frm) {
-    applying_pricing_rule(frm)
-  }
+
 });
 
 function set_series(frm) {
@@ -40,6 +38,13 @@ frappe.ui.form.on('Sales Invoice', {
 		bt.forEach(function(bt){
 			frm.page.remove_inner_button(bt, 'Create')
 		});
+
+  const  original = cur_frm.cscript.calculate_totals;
+  cur_frm.cscript.calculate_totals = function()
+  {
+  original.apply(this, frm);
+  applying_pricing_rule(frm);
+  }
   },
   customer: function (frm) {
     _set_customer_account_balance(frm);
@@ -150,17 +155,8 @@ frappe.ui.form.on('Sales Invoice Item', {
   item_code: function (frm, cdt, cdn) {
     get_total_stock_qty(frm, cdt, cdn);
     get_pricing_rule_percent(frm, cdt, cdn);
-    applying_pricing_rule(frm);
   },
-  qty:function (frm, cdt, cdn) {
-    applying_pricing_rule(frm);
-  },
-  items_remove: function (frm, cdt, cdn) {
-    applying_pricing_rule(frm);
-  },
-  amount:function (frm, cdt, cdn) {
-    applying_pricing_rule(frm);
-  }
+
 });
 
 function get_pricing_rule_percent(frm, cdt, cdn)
