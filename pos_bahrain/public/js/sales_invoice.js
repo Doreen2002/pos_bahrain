@@ -116,7 +116,7 @@ function get_oustanding_invoices(frm){
 }
 
 function set_discount(frm){
-  if(frm.doc.is_return == 1){
+  if(frm.doc.is_return == 1 && frm.doc.return_against){
     frappe.call({
       method: "pos_bahrain.doc_events.sales_invoice.set_discount_on_return",
       args: {
