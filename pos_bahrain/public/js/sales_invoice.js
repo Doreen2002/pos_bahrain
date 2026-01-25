@@ -4,6 +4,9 @@ frappe.ui.form.on('Sales Invoice', {
   pos_profile: function(frm) { set_series(frm); },
   is_pos: function(frm) { 
     setTimeout(() => { set_series(frm); }, 500); 
+  },
+  customer:function(frm) {
+    applying_pricing_rule(frm)
   }
 });
 
@@ -147,7 +150,17 @@ frappe.ui.form.on('Sales Invoice Item', {
   item_code: function (frm, cdt, cdn) {
     get_total_stock_qty(frm, cdt, cdn);
     get_pricing_rule_percent(frm, cdt, cdn);
+    applying_pricing_rule(frm);
   },
+  qty:function (frm, cdt, cdn) {
+    applying_pricing_rule(frm);
+  },
+  items_remove: function (frm, cdt, cdn) {
+    applying_pricing_rule(frm);
+  },
+  amount:function (frm, cdt, cdn) {
+    applying_pricing_rule(frm);
+  }
 });
 
 function get_pricing_rule_percent(frm, cdt, cdn)
@@ -475,3 +488,25 @@ function remove_credit_button_sales_return_settings(frm){
         });
 
     }
+
+
+function applying_pricing_rule(frm)
+{
+frappe.call({
+method:"pos_bahrain.doc_events.sales_invoice.apply_discount_on_transaction",
+args:{"doc":frm.doc},
+callback(r)
+{
+console.log(r.message)
+if (r.message) {
+
+frm.set_value("apply_discount_on", r.message['apply_discount_on']);
+frm.set_value("additional_discount_percentage", r.message['additional_discount_percentage']);
+frm.set_value("discount_amount", r.message['discount_amount']);
+frm.refresh_field("apply_discount_on");
+frm.refresh_field("additional_discount_percentage");
+frm.refresh_field("discount_amount");
+}
+}
+})
+}

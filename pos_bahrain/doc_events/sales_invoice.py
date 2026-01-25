@@ -11,6 +11,15 @@ from erpnext.accounts.doctype.sales_invoice.sales_invoice import make_delivery_n
 from pos_bahrain.api.sales_invoice import get_customer_account_balance
 from functools import partial
 from toolz import first, compose, pluck, unique
+from erpnext.accounts.doctype.pricing_rule.utils import apply_pricing_rule_on_transaction
+import json
+
+@frappe.whitelist()
+def apply_discount_on_transaction(doc):
+    document = frappe.new_doc('Sales Invoice')
+    document.update(json.loads(doc)) 
+    apply_pricing_rule_on_transaction(document)
+    return document
 
 
 @frappe.whitelist()
