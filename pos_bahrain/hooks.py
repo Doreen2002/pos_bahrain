@@ -506,11 +506,13 @@ def delete_auto_created_batches_override(self):
 	for data in frappe.get_all("Batch",
 		{'reference_name': self.name, 'reference_doctype': self.doctype}):
 		frappe.delete_doc("Batch", data.name)
-
+		
+import frappe
 def custom_purchase_invoice_on_recurring(self, reference_doc, auto_repeat_doc):
-		self.due_date = None
-		self.bill_no = None
-
+    self.due_date = None
+    cost_center = frappe.db.get_value("Company", self.company, "cost_center")
+    self.pb_set_cost_center = reference_doc.pb_set_cost_center or cost_center
+	
 StockController.delete_auto_created_batches = delete_auto_created_batches_override
 
 
