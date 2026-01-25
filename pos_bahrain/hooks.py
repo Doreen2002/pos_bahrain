@@ -510,7 +510,6 @@ def delete_auto_created_batches_override(self):
 import frappe
 def custom_purchase_invoice_on_recurring(self, reference_doc, auto_repeat_doc):
     self.due_date = None
-    self.bill_no = None
     cost_center = frappe.db.get_value("Company", self.company, "cost_center")
     self.pb_set_cost_center = reference_doc.pb_set_cost_center or cost_center
 	
