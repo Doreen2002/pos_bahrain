@@ -5,7 +5,13 @@ frappe.ui.form.on('Sales Invoice', {
     frm.set_df_property("main_invoice", "read_only",  false)
     frm.set_df_property("main_invoice", "hidden",  false)
   
-  
+    frm.set_query('pb_sales_person', ()=> {
+      return{
+       filters:{ company:frm.doc.company,
+        status:'Active'
+      }
+    }
+    })
   },
 
   refresh: function (frm) {

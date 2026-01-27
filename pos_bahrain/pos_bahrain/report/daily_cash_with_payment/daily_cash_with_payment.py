@@ -9,7 +9,7 @@ from functools import partial, reduce
 from toolz import groupby, pluck, compose, merge, keyfilter
 
 def execute(filters=None):
-	mop = _get_mop()
+	mop = _get_mop(filters)
 
 	columns = _get_columns(mop, filters)
 	data = _get_data(_get_clauses(filters), filters, mop)
@@ -19,6 +19,7 @@ def execute(filters=None):
 
 def _get_columns(mop, filters):
 	summary_view = filters.get('summary_view')
+	show_summary_only = filters.get('show_summary_only')
 	show_customer_info = filters.get('show_customer_info')
 	show_ref_info = filters.get('show_reference_info')
 	columns = []
@@ -33,18 +34,18 @@ def _get_columns(mop, filters):
 			"width": width
 		}
 
-	if not summary_view:
+	if not summary_view and  not show_summary_only:
 		columns.append(
 			make_column("invoice", type="Link", options="Sales Invoice")
 		)
-	if not summary_view:
+	if not summary_view  and  not show_summary_only:
 		columns.append(
 			make_column("pe", type="Link", options="Payment Entry",width='50')
 		)
+	if not show_summary_only:
+		columns.append(make_column("posting_date", "Date", type="Date"))
 
-	columns.append(make_column("posting_date", "Date", type="Date"))
-
-	if not summary_view:
+	if not summary_view and not show_summary_only:
 		columns.append(
 			make_column("posting_time", "Time", type="Time")
 		)
@@ -165,10 +166,21 @@ def _get_data(clauses, filters, mop):
 			groupby('posting_date', result),
 			mop
 		)
-
+	if filters.get('show_summary_only'):
+		mop_cols = [
+		mop_col.replace(" ", "_").lower()
+			for mop_col in mop
+		]
+		for mode in mop_cols:
+			result = _summarize_payments(
+				groupby(mode, result),
+				mop
+			)
 	def get_sort_key(item):
 		if filters.get("summary_view"):
 			return item["posting_date"]
+		if filters.get('show_summary_only'):
+			return 0
 		return datetime.combine(item["posting_date"], datetime.min.time()) + item["posting_time"]
 
 	return sorted(result, key=get_sort_key)
@@ -292,12 +304,17 @@ def _make_payment_row(mop_cols, _, row):
 	return _
 
 
-def _get_mop():
+def _get_mop(filters):
 	mop = frappe.get_all('POS Bahrain Settings MOP', fields=['mode_of_payment'])
 
-	if not mop:
+	if not mop and filters.get('query_doctype') == 'Warehouse':
 		frappe.throw(_('Please set Report MOP under POS Bahrain Settings'))
-
+	if filters.get('query_doctype') == 'POS Profile':
+		mop = frappe.db.get_all('POS Payment Method',
+			filters={'parent': filters.get('query_doc')},
+			fields=['mode_of_payment']
+			
+		)
 	return list(pluck('mode_of_payment', mop))
 
 
