@@ -6,7 +6,7 @@ from erpnext.stock.report.stock_ledger.stock_ledger import execute as stock_ledg
 
 def execute(filters=None):
 	columns, data = [], []
-	keys_remove = ['incoming_rate', 'valuation_rate', 'in_out_rate', 'stock_value']
+	keys_remove = ['incoming_rate', 'valuation_rate', 'in_out_rate', 'stock_value', 'stock_value_difference']
 	stock_ledger_columns, stock_ledger_data = stock_ledger_execute(filters)
 	columns = [v for v in stock_ledger_columns if v.get('fieldname') not in keys_remove]
 	data = stock_ledger_data
