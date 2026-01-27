@@ -9,7 +9,7 @@ from functools import partial, reduce
 from toolz import groupby, pluck, compose, merge, keyfilter
 
 def execute(filters=None):
-	mop = _get_mop()
+	mop = _get_mop(filters)
 
 	columns = _get_columns(mop, filters)
 	data = _get_data(_get_clauses(filters), filters, mop)
@@ -292,12 +292,17 @@ def _make_payment_row(mop_cols, _, row):
 	return _
 
 
-def _get_mop():
+def _get_mop(filters):
 	mop = frappe.get_all('POS Bahrain Settings MOP', fields=['mode_of_payment'])
 
-	if not mop:
+	if not mop and filters.get('query_doctype') == 'Warehouse':
 		frappe.throw(_('Please set Report MOP under POS Bahrain Settings'))
-
+	if filters.get('query_doctype') == 'POS Profile':
+		mop = frappe.db.get_all('POS Payment Method',
+			filters={'parent': filters.get('query_doc')},
+			fields=['mode_of_payment']
+			
+		)
 	return list(pluck('mode_of_payment', mop))
 
 
