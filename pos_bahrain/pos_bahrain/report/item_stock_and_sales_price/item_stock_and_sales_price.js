@@ -9,7 +9,11 @@ frappe.query_reports["Item Stock and Sales Price"] = {
 			fieldtype: 'Link',
 			options: 'Company',
 			reqd: 1,
-			default: frappe.defaults.get_default('company')
+			default: frappe.defaults.get_default('company'),
+			on_change:function()
+			{
+				frappe.query_report.set_filter_value('warehouse', "");
+			}
 		},
 		{
 			fieldname: 'warehouse',
@@ -17,6 +21,14 @@ frappe.query_reports["Item Stock and Sales Price"] = {
 			fieldtype: 'Link',
 			options: 'Warehouse',
 			reqd: 1,
+			get_query:function()
+			{
+				return{
+					filters:{
+						'company':frappe.query_report.filters[0].value
+					}
+				}
+			}
 			
 		},
 		{
@@ -33,5 +45,7 @@ frappe.query_reports["Item Stock and Sales Price"] = {
 			reqd: 1,
 			default: frappe.datetime.get_today(),
 		},
-	]
+
+	],
+	
 };
