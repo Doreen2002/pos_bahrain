@@ -298,6 +298,7 @@ fixtures = [
                     "Sales Order Item-discount_percentage-depends_on",
                     "Payment Entry Reference-total_amount-in_list_view",
                     "Sales Invoice-customer_name-default",
+					"Sales Invoice Item-use_serial_batch_fields-default"
                 ],
             ]
         ],
