@@ -45,6 +45,12 @@ frappe.query_reports["Item Stock and Sales Price"] = {
 			reqd: 1,
 			default: frappe.datetime.get_today(),
 		},
+		{
+			label: __('Hide Zero Stock Items'),
+			fieldname: 'hide_zero_stock_items',
+			fieldtype: 'Check',
+			default: 0
+		}
 
 	],
 	

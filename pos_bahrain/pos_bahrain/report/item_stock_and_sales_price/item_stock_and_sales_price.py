@@ -27,14 +27,20 @@ def execute(filters=None):
 		i.item_name as item_name,
 		i.item_group as item_group,
 		id.default_price_list,
-		 ib.barcode as barcode,
-		(SELECT SUM(actual_qty) FROM `tabBin` WHERE `tabBin`.item_code = i.name AND `tabBin`.warehouse = %(warehouse)s) as warehouse_quantity,
+		ib.barcode as barcode,
+		b.actual_qty as warehouse_quantity,
 		(SELECT price_list_rate FROM `tabItem Price` WHERE `tabItem Price`.item_code = i.name AND `tabItem Price`.price_list = id.default_price_list LIMIT 1) as selling_price,
 		(SELECT valuation_rate FROM `tabStock Ledger Entry` WHERE `tabStock Ledger Entry`.item_code = i.name AND `tabStock Ledger Entry`.warehouse = %(warehouse)s AND `tabStock Ledger Entry`.voucher_type = 'Sales Invoice' ORDER BY `tabStock Ledger Entry`.posting_date DESC, `tabStock Ledger Entry`.posting_time DESC, `tabStock Ledger Entry`.creation DESC LIMIT 1) as valuation_rate
 		FROM `tabItem` as i
 		LEFT JOIN `tabItem Barcode` as ib ON i.name = ib.parent
 		LEFT JOIN `tabItem Default` as id ON  i.name = id.parent AND id.company = %(company)s
-		WHERE disabled = 0
-			""", as_dict=1, values={'warehouse':filters.get('warehouse'), 'company':filters.get('company')})
+		LEFT JOIN `tabBin` b
+		ON b.item_code = i.name
+		AND b.warehouse = %(warehouse)s
+		WHERE disabled = 0 AND (
+        IFNULL(%(hide_zero_stock_items)s, 0) = 0
+        OR IFNULL(b.actual_qty, 0) > 0
+    )
+			""", as_dict=1, values={'warehouse':filters.get('warehouse'), 'hide_zero_stock_items':filters.get('hide_zero_stock_items'), 'company':filters.get('company')})
 		 
 	return columns, data
