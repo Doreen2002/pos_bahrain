@@ -575,3 +575,48 @@ def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
 SalesInvoice.on_recurring = custom_sales_on_recurring
 PurchaseInvoice.on_recurring = custom_purchase_on_recurring 
 PaymentEntry.on_recurring = custom_payment_on_recurring
+
+from erpnext.accounts.doctype.pricing_rule.utils import get_other_conditions , _get_tree_conditions
+
+def _custom_get_other_conditions(conditions, values, args):
+	for field in ["company", "customer", "supplier", "campaign", "sales_partner"]:
+		if args.get(field):
+			conditions += f" and ifnull(`tabPricing Rule`.{field}, '') in (%({field})s, '')"
+			values[field] = args.get(field)
+		else:
+			conditions += f" and ifnull(`tabPricing Rule`.{field}, '') = ''"
+
+	for parenttype in ["Customer Group", "Territory", "Supplier Group"]:
+		group_condition = _get_tree_conditions(args, parenttype, "`tabPricing Rule`")
+		if group_condition:
+			conditions += " and " + group_condition
+
+	if args.get("transaction_date"):
+		conditions += """ and %(transaction_date)s between ifnull(`tabPricing Rule`.valid_from, '2000-01-01')
+			and ifnull(`tabPricing Rule`.valid_upto, '2500-12-31')"""
+		values["transaction_date"] = args.get("transaction_date")
+		
+	if args.get("posting_date"):
+		conditions += """ and %(posting_date)s between ifnull(`tabPricing Rule`.valid_from, '2000-01-01')
+			and ifnull(`tabPricing Rule`.valid_upto, '2500-12-31')"""
+		values["posting_date"] = args.get("posting_date")
+		
+	if args.get("doctype") in [
+		"Quotation",
+		"Quotation Item",
+		"Sales Order",
+		"Sales Order Item",
+		"Delivery Note",
+		"Delivery Note Item",
+		"Sales Invoice",
+		"Sales Invoice Item",
+		"POS Invoice",
+		"POS Invoice Item",
+	]:
+		conditions += """ and ifnull(`tabPricing Rule`.selling, 0) = 1"""
+	else:
+		conditions += """ and ifnull(`tabPricing Rule`.buying, 0) = 1"""
+
+	return conditions
+
+get_other_conditions  = _custom_get_other_conditions
