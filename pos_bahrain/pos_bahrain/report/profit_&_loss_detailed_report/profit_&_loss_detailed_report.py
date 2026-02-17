@@ -164,7 +164,7 @@ def calculate_net_profit(gross_profit, indirect_income, indirect_expense, period
         total_indirect_income = flt(indirect_income[0].get(key, 0), 3) if indirect_income else 0   
         total_indirect_expense = flt(indirect_expense[0].get(key, 0), 3) if indirect_expense else 0   
 
-        net_profit[key] = total_gross_profit - total_indirect_income - total_indirect_expense
+        net_profit[key] = (total_gross_profit + total_indirect_income) - total_indirect_expense
 
     return net_profit
 
