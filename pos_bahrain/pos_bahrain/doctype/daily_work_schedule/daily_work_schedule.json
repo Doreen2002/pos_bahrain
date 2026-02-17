@@ -1,0 +1,127 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-02-16 14:24:21.445699",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_eym8",
+  "amended_from",
+  "posting_date",
+  "schedule_date",
+  "team",
+  "work_requirement",
+  "work_type",
+  "column_break_qbnc",
+  "visit_schedule",
+  "customer",
+  "mobile_no",
+  "area",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_eym8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Daily Work Schedule",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "default": "Today",
+   "fieldname": "schedule_date",
+   "fieldtype": "Date",
+   "label": "Schedule Date"
+  },
+  {
+   "fieldname": "team",
+   "fieldtype": "Table MultiSelect",
+   "label": "Team",
+   "options": "Daily Work Schedule Team"
+  },
+  {
+   "fieldname": "work_requirement",
+   "fieldtype": "Small Text",
+   "label": "Work Requirement"
+  },
+  {
+   "fieldname": "column_break_qbnc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "visit_schedule",
+   "fieldtype": "Int",
+   "label": "Visit Schedule"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "customer.pb_mobile_number",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "work_type",
+   "fieldtype": "Select",
+   "label": "Work Type",
+   "options": "Maintenance\nWarranty"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Data",
+   "label": "Area"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-02-16 14:41:48.087614",
+ "modified_by": "Administrator",
+ "module": "Pos Bahrain",
+ "name": "Daily Work Schedule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
