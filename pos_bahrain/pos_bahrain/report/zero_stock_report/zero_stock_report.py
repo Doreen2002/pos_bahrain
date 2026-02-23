@@ -14,7 +14,7 @@ def execute(filters=None):
     columns = static_columns + dynamic_columns
     dynamic_data = get_dynamic_data(filters, dynamic_columns)
 
-    data = merge_data(static_data, dynamic_data, dynamic_columns)
+    data = merge_data(static_data, dynamic_data, dynamic_columns, filters)
 
     return columns, data
 
@@ -31,6 +31,10 @@ def get_static_columns():
         {"label": _("Landed Cost"), "fieldname": "landed_cost", "fieldtype": "Currency", "width": 100},
         {"label": _("Valuation Rate"), "fieldname": "valuation_rate", "fieldtype": "Currency", "width": 100},
         {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
+        {"label": _("WH1 Retail Price"), "fieldname": "wh1_retail_price", "fieldtype": "Currency", "width": 100},
+        {"label": _("WH2 Retail Price"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 100},
+        {"label": _("WH1 Profit"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 100},
+        {"label": _("WH2 Profit"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 100},
     ]
 
 def get_dynamic_columns(filters, item_codes):
@@ -93,30 +97,29 @@ def get_static_data(filters):
                 FROM `tabStock Ledger Entry` tsle 
                 WHERE tsle.item_code = ti.name 
                 AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %s AND %s 
+                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
                 ORDER BY tsle.posting_date DESC LIMIT 1),0) AS qty,
                  IFNULL((SELECT tsle.valuation_rate 
                 FROM `tabStock Ledger Entry` tsle 
                 WHERE tsle.item_code = ti.name 
                 AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %s AND %s 
+                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
                 ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS landed_cost, 
             IFNULL((SELECT tsle.incoming_rate 
                 FROM `tabStock Ledger Entry` tsle 
                 WHERE tsle.item_code = ti.name 
                 AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %s AND %s 
+                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
                 ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS wholesale_price,  
             IFNULL((SELECT tsle.valuation_rate 
                 FROM `tabStock Ledger Entry` tsle 
                 WHERE tsle.item_code = ti.name 
                 AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %s AND %s 
+                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
                 ORDER BY tsle.posting_date DESC LIMIT 1),0) AS valuation_rate,
             tw.name as warehouse, 
             IF(selling_price.price_list = 'Standard Selling', selling_price.price_list_rate, NULL) AS selling_price,
             IF(buying_price.price_list = 'Standard Buying', buying_price.price_list_rate, NULL) AS buying_price
-
         FROM 
             tabItem AS ti
         CROSS JOIN 
@@ -137,8 +140,7 @@ def get_static_data(filters):
     """.format(where_clause=where_clause) 
 
     data = frappe.db.sql(sql_query, 
-                         (filters.get('from_date'), filters.get('date'), 
-                          filters.get('from_date'), filters.get('date'),filters.get('from_date'), filters.get('date'),filters.get('from_date'), filters.get('date')), 
+                         values = {"from_date": filters.get('from_date'), "date": filters.get('date')}, 
                          as_dict=True)
     return data
 
@@ -164,7 +166,7 @@ def get_dynamic_data(filters, dynamic_columns):
 
     return dynamic_data
 
-def merge_data(static_data, dynamic_data, dynamic_columns):
+def merge_data(static_data, dynamic_data, dynamic_columns, filters):
     for item in static_data:
         item_code = item['item_code']
         if item_code in dynamic_data:
@@ -172,4 +174,8 @@ def merge_data(static_data, dynamic_data, dynamic_columns):
         else:
             for column in dynamic_columns:
                 item[column['fieldname']] = None
+        item['wh1_retail_price'] = item.get('selling_price') * (100 - (filters.get('wh1_margin', 0) / 100)) if item.get('selling_price') is not None else None
+        item['wh2_retail_price'] = item.get('selling_price') * (100 - (filters.get('wh2_margin', 0) / 100)) if item.get('selling_price') is not None else None
+        item['wh1_profit'] =  item['landed_cost'] - item['wh1_retail_price'] if item.get('wh1_retail_price') is not None else None
+        item['wh2_profit'] =  item['landed_cost'] - item['wh2_retail_price']  if item.get('wh2_retail_price') is not None else None
     return static_data
