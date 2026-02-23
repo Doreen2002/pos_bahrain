@@ -174,8 +174,8 @@ def merge_data(static_data, dynamic_data, dynamic_columns, filters):
         else:
             for column in dynamic_columns:
                 item[column['fieldname']] = None
-        item['wh1_retail_price'] = item.get('selling_price') * (100 - (filters.get('wh1_margin', 0) / 100)) if item.get('selling_price') is not None else None
-        item['wh2_retail_price'] = item.get('selling_price') * (100 - (filters.get('wh2_margin', 0) / 100)) if item.get('selling_price') is not None else None
-        item['wh1_profit'] =  item['landed_cost'] - item['wh1_retail_price'] if item.get('wh1_retail_price') is not None else None
-        item['wh2_profit'] =  item['landed_cost'] - item['wh2_retail_price']  if item.get('wh2_retail_price') is not None else None
+        item['wh1_retail_price'] = item.get('selling_price') * ((100 - filters.get('wh1_margin', 0)) / 100) if item.get('selling_price') is not None else None
+        item['wh2_retail_price'] = item.get('selling_price') * ((100 - filters.get('wh2_margin', 0)) / 100) if item.get('selling_price') is not None else None
+        item['wh1_profit'] =  item['wh1_retail_price'] -  item['landed_cost']  if item.get('wh1_retail_price') is not None else None
+        item['wh2_profit'] =  item['wh2_retail_price'] - item['landed_cost']   if item.get('wh2_retail_price') is not None else None
     return static_data
