@@ -32,8 +32,8 @@ def get_static_columns():
         {"label": _("Valuation Rate"), "fieldname": "valuation_rate", "fieldtype": "Currency", "width": 100},
         {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
         {"label": _("WH1 Retail Price"), "fieldname": "wh1_retail_price", "fieldtype": "Currency", "width": 100},
-        {"label": _("WH2 Retail Price"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 100},
         {"label": _("WH1 Profit"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 100},
+        {"label": _("WH2 Retail Price"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 100},
         {"label": _("WH2 Profit"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 100},
     ]
 
