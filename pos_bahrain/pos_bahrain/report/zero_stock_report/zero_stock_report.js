@@ -55,7 +55,7 @@ frappe.query_reports["Zero Stock Report"] = {
 
 	],
     onload: function(report) {
-        if (!frappe.user.has_role("Account Manager")) {
+        if (!frappe.user.has_role("Accounts Manager")) {
             report.get_filter("wh1_margin").toggle(false);
             report.get_filter("wh2_margin").toggle(false);
         }
