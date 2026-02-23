@@ -40,6 +40,24 @@ frappe.query_reports["Zero Stock Report"] = {
             "label": __("Show item in stock"),
             "fieldtype": "Check",
         },
+        {
+            "fieldname": "wh1_margin",
+            "label": __("WH1 Margin"),
+            "fieldtype": "Float",
+            'default': 0.0,
+        },
+        {
+            "fieldname": "wh2_margin",
+            "label": __("WH2 Margin"),
+            "fieldtype": "Float",
+            'default': 0.0,
+        },
 
-	]
+	],
+    onload: function(report) {
+        if (!frappe.user.has_role("Account Manager")) {
+            report.get_filter("wh1_margin").toggle(false);
+            report.get_filter("wh2_margin").toggle(false);
+        }
+    }
 };
