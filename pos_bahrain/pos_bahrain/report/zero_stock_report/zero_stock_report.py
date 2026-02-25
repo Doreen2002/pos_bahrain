@@ -33,8 +33,10 @@ def get_static_columns():
         {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
         {"label": _("WH1 Retail Price"), "fieldname": "wh1_retail_price", "fieldtype": "Currency", "width": 100},
         {"label": _("WH1 Profit"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 100},
+        {"label": _("WH1 Profit %"), "fieldname": "wh1_profit_per", "fieldtype": "Data", "width": 100},
         {"label": _("WH2 Retail Price"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 100},
         {"label": _("WH2 Profit"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 100},
+        {"label": _("WH2 Profit %"), "fieldname": "wh2_profit_per", "fieldtype": "Data", "width": 100},
     ]
 
 def get_dynamic_columns(filters, item_codes):
@@ -178,4 +180,7 @@ def merge_data(static_data, dynamic_data, dynamic_columns, filters):
         item['wh2_retail_price'] = item.get('selling_price') * ((100 - filters.get('wh2_margin', 0)) / 100) if item.get('selling_price') is not None else None
         item['wh1_profit'] =  item['wh1_retail_price'] -  item['landed_cost']  if item.get('wh1_retail_price') is not None else None
         item['wh2_profit'] =  item['wh2_retail_price'] - item['landed_cost']   if item.get('wh2_retail_price') is not None else None
+        item['wh1_profit_per'] =f"{item['wh1_profit']/item['landed_cost'] * 100} %" 
+        item['wh2_profit_per'] =f"{item['wh2_profit']/item['landed_cost'] * 100} %" 
+
     return static_data
