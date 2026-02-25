@@ -180,7 +180,7 @@ def merge_data(static_data, dynamic_data, dynamic_columns, filters):
         item['wh2_retail_price'] = item.get('selling_price') * ((100 - filters.get('wh2_margin', 0)) / 100) if item.get('selling_price') is not None else None
         item['wh1_profit'] =  item['wh1_retail_price'] -  item['landed_cost']  if item.get('wh1_retail_price') is not None else None
         item['wh2_profit'] =  item['wh2_retail_price'] - item['landed_cost']   if item.get('wh2_retail_price') is not None else None
-        item['wh1_profit_per'] =f"{item['wh1_profit']/item['landed_cost'] * 100 if item['landed_cost'] != 0 else 0} %" 
-        item['wh2_profit_per'] =f"{item['wh2_profit']/item['landed_cost'] * 100 if item['landed_cost'] != 0 else 0} %" 
+        item['wh1_profit_per'] =f"{item['wh1_profit']/item['landed_cost'] * 100 if item['landed_cost'] != 0 else 0} %" if item['wh1_profit'] is not None else '0 %'
+        item['wh2_profit_per'] =f"{item['wh2_profit']/item['landed_cost'] * 100 if item['landed_cost'] != 0 else 0} %" if item['wh2_profit'] is not None else '0 %'
 
     return static_data
