@@ -112,7 +112,7 @@ def get_static_data(filters):
                     IFNULL((SELECT price_list_rate 
                     FROM `tabItem Price` 
                     WHERE item_code = ti.name  AND uom = ti.stock_uom
-                    AND price_list = 'WholeSale Price' ORDER BY creation DESC LIMIT 1), 0)    
+                    AND price_list = 'Wholesale Price' ORDER BY creation DESC LIMIT 1), 0)    
                 ELSE 
                     IFNULL((
                             SELECT tsle.incoming_rate 
