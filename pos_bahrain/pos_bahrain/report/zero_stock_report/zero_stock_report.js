@@ -52,6 +52,11 @@ frappe.query_reports["Zero Stock Report"] = {
             "fieldtype": "Float",
             'default': 0.0,
         },
+        {
+            "fieldname": "use_manual_price",
+            "label": __("Use Manual Price"),
+            "fieldtype": "Check",
+        },
 
 	],
     onload: function(report) {

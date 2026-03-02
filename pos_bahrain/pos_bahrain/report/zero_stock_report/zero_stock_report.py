@@ -101,18 +101,37 @@ def get_static_data(filters):
                 AND tsle.warehouse = tw.name 
                 AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
                 ORDER BY tsle.posting_date DESC LIMIT 1),0) AS qty,
-                 IFNULL((SELECT tsle.valuation_rate 
-                FROM `tabStock Ledger Entry` tsle 
-                WHERE tsle.item_code = ti.name 
-                AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
-                ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS landed_cost, 
-            IFNULL((SELECT tsle.incoming_rate 
-                FROM `tabStock Ledger Entry` tsle 
-                WHERE tsle.item_code = ti.name 
-                AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
-                ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS wholesale_price,  
+            CASE 
+                WHEN %(use_manual_price)s = 1 THEN 
+                    IFNULL((SELECT price_list_rate 
+                    FROM `tabItem Price` 
+                    WHERE item_code = ti.name  AND uom = ti.stock_uom
+                    AND price_list = 'Landed Cost' ORDER BY creation DESC LIMIT 1), 0) 
+                ELSE 
+                    IFNULL((SELECT tsle.valuation_rate 
+                    FROM `tabStock Ledger Entry` tsle 
+                    WHERE tsle.item_code = ti.name 
+                    AND tsle.warehouse = tw.name 
+                    AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
+                    ORDER BY tsle.posting_date DESC LIMIT 1), 0) 
+            END AS landed_cost, 
+            CASE 
+                WHEN %(use_manual_price)s = 1 THEN 
+                    IFNULL((SELECT price_list_rate 
+                    FROM `tabItem Price` 
+                    WHERE item_code = ti.name  AND uom = ti.stock_uom
+                    AND price_list = 'Wholesale Price' ORDER BY creation DESC LIMIT 1), 0)    
+                ELSE 
+                    IFNULL((
+                            SELECT tsle.incoming_rate 
+                            FROM `tabStock Ledger Entry` tsle 
+                            WHERE tsle.item_code = ti.name 
+                            AND tsle.warehouse = tw.name 
+                            AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
+                            ORDER BY tsle.posting_date DESC, tsle.creation DESC 
+                            LIMIT 1
+                        ), 0)   
+            END AS wholesale_price, 
             IFNULL((SELECT tsle.valuation_rate 
                 FROM `tabStock Ledger Entry` tsle 
                 WHERE tsle.item_code = ti.name 
@@ -140,9 +159,9 @@ def get_static_data(filters):
             {where_clause}
         LIMIT 10000
     """.format(where_clause=where_clause) 
-
+    
     data = frappe.db.sql(sql_query, 
-                         values = {"from_date": filters.get('from_date'), "date": filters.get('date')}, 
+                         values = {"from_date": filters.get('from_date'), "date": filters.get('date'), 'use_manual_price': filters.get('use_manual_price')}, 
                          as_dict=True)
     return data
 
