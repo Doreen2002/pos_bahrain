@@ -101,12 +101,20 @@ def get_static_data(filters):
                 AND tsle.warehouse = tw.name 
                 AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
                 ORDER BY tsle.posting_date DESC LIMIT 1),0) AS qty,
-                 IFNULL((SELECT tsle.valuation_rate 
-                FROM `tabStock Ledger Entry` tsle 
-                WHERE tsle.item_code = ti.name 
-                AND tsle.warehouse = tw.name 
-                AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
-                ORDER BY tsle.posting_date DESC LIMIT 1), 0) AS landed_cost, 
+            CASE 
+                WHEN %(use_manual_price)s = 1 THEN 
+                    IFNULL((SELECT price_list_rate 
+                    FROM `tabItem Price` 
+                    WHERE item_code = ti.name  AND uom = ti.stock_uom
+                    AND price_list = 'Landed Cost' ORDER BY creation DESC LIMIT 1), 0) 
+                ELSE 
+                    IFNULL((SELECT tsle.valuation_rate 
+                    FROM `tabStock Ledger Entry` tsle 
+                    WHERE tsle.item_code = ti.name 
+                    AND tsle.warehouse = tw.name 
+                    AND tsle.posting_date BETWEEN %(from_date)s AND %(date)s 
+                    ORDER BY tsle.posting_date DESC LIMIT 1), 0) 
+            END AS landed_cost, 
             CASE 
                 WHEN %(use_manual_price)s = 1 THEN 
                     IFNULL((SELECT price_list_rate 
