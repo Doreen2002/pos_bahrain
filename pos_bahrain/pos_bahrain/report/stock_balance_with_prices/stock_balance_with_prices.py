@@ -96,12 +96,22 @@ def _get_data(data, prices, filters):
 
     def add_fields(row):
         item_code = row.get("item_code")
+        _default_sellling_price_list = frappe.db.get_all('Item Default', filters={'parent': item_code, 'company':filters.get('company')}, fields=['default_price_list'])
+        _selling_price = 0
+        if _default_sellling_price_list:
+            for _default in _default_sellling_price_list:
+                is_selling = frappe.db.get_value('Price List', _default.get('default_price_list'), 'selling')
+                if is_selling:  
+                    _selling_item_price = frappe.db.get_all('Item Price', filters={'item_code': item_code, 'price_list': _default.get('default_price_list')}, fields=['price_list_rate'], order_by='creation desc', limit=1)
+                    if  _selling_item_price :
+                        _selling_price = _selling_item_price[0].get('price_list_rate')
+                        break
         return merge(
             row,
             {
                 "supplier": suppliers_by_item_code.get(item_code),
                 "buying_price": buying_prices_by_item_code.get(item_code),
-                "selling_price": selling_prices_by_item_code.get(item_code),
+                "selling_price": _selling_price ,
             },
         )
 

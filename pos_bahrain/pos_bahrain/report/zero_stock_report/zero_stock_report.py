@@ -5,7 +5,7 @@ import frappe
 from frappe import _
 
 def execute(filters=None):
-    static_columns = get_static_columns()
+    static_columns = get_static_columns(filters=filters)
     static_data = get_static_data(filters)
 
     item_codes = [item['item_code'] for item in static_data]
@@ -18,7 +18,7 @@ def execute(filters=None):
 
     return columns, data
 
-def get_static_columns():
+def get_static_columns(filters):
     return [
         {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 100},
         {"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 100},
@@ -31,12 +31,12 @@ def get_static_columns():
         {"label": _("Landed Cost"), "fieldname": "landed_cost", "fieldtype": "Currency", "width": 100},
         {"label": _("Valuation Rate"), "fieldname": "valuation_rate", "fieldtype": "Currency", "width": 100},
         {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
-        {"label": _("WH1 Retail Price"), "fieldname": "wh1_retail_price", "fieldtype": "Currency", "width": 100},
-        {"label": _("WH1 Profit"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 100},
-        {"label": _("WH1 Profit %"), "fieldname": "wh1_profit_per", "fieldtype": "Data", "width": 100},
-        {"label": _("WH2 Retail Price"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 100},
-        {"label": _("WH2 Profit"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 100},
-        {"label": _("WH2 Profit %"), "fieldname": "wh2_profit_per", "fieldtype": "Data", "width": 100},
+        {"label": _(f"WH1 Retail Price {filters.get('wh1_margin')}%"), "fieldname": "wh1_retail_price", "fieldtype": "Currency", "width": 200},
+        {"label": _(f"WH1 Profit {filters.get('wh1_margin')}%"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 150},
+        {"label": _(f"WH1 Profit  {filters.get('wh1_margin')}%"), "fieldname": "wh1_profit_per", "fieldtype": "Data", "width": 150},
+        {"label": _(f"WH2 Retail Price {filters.get('wh2_margin')}%"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 200},
+        {"label": _(f"WH2 Profit {filters.get('wh2_margin')}%"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 150},
+        {"label": _(f"WH2 Profit  {filters.get('wh2_margin')}%"), "fieldname": "wh2_profit_per", "fieldtype": "Data", "width": 150},
     ]
 
 def get_dynamic_columns(filters, item_codes):
@@ -67,6 +67,8 @@ def get_where_clause(filters):
         where_clause += "AND ti.item_group = '{}' ".format(filters.get('item_group'))
     if filters.get('warehouse'):
         where_clause += "AND tw.name = '{}' ".format(filters.get('warehouse'))
+    if filters.get('default_supplier'):
+        where_clause += "AND id.default_supplier = '{}' ".format(filters.get('default_supplier'))
     if not filters.get('show_item_in_stock'):
         where_clause += """AND IFNULL((SELECT tsle.qty_after_transaction 
                                        FROM `tabStock Ledger Entry` tsle 
@@ -146,7 +148,7 @@ def get_static_data(filters):
         CROSS JOIN 
             tabWarehouse tw
         INNER JOIN
-            `tabItem Default` id ON ti.name = id.parent
+            `tabItem Default` id ON ti.name = id.parent 
         LEFT JOIN
             (SELECT item_code, price_list_rate, price_list FROM `tabItem Price` WHERE price_list = 'Standard Selling') AS selling_price
             ON selling_price.item_code = ti.name
@@ -199,7 +201,7 @@ def merge_data(static_data, dynamic_data, dynamic_columns, filters):
         item['wh2_retail_price'] = item.get('selling_price') * ((100 - filters.get('wh2_margin', 0)) / 100) if item.get('selling_price') is not None else None
         item['wh1_profit'] =  item['wh1_retail_price'] -  item['landed_cost']  if item.get('wh1_retail_price') is not None else None
         item['wh2_profit'] =  item['wh2_retail_price'] - item['landed_cost']   if item.get('wh2_retail_price') is not None else None
-        item['wh1_profit_per'] =f"{item['wh1_profit']/item['landed_cost'] * 100 if item['landed_cost'] != 0 else 0} %" if item['wh1_profit'] is not None else '0 %'
-        item['wh2_profit_per'] =f"{item['wh2_profit']/item['landed_cost'] * 100 if item['landed_cost'] != 0 else 0} %" if item['wh2_profit'] is not None else '0 %'
-
+        item['wh1_profit_per'] ='{:.2f}%'.format(item['wh1_profit']/item['landed_cost'] * 100) if item['landed_cost'] != 0 else '{:.2f}%'.format(0) if item['wh1_profit'] is not None else '{:.2f}%'.format(0)
+        item['wh2_profit_per'] ='{:.2f}%'.format(item['wh2_profit']/item['landed_cost'] * 100) if item['landed_cost'] != 0 else '{:.2f}%'.format(0) if item['wh2_profit'] is not None else '{:.2f}%'.format(0)
+       
     return static_data
