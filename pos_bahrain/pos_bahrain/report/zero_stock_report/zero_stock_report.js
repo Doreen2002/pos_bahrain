@@ -35,6 +35,12 @@ frappe.query_reports["Zero Stock Report"] = {
             "fieldtype": "Link",
             "options":"Warehouse",
         },
+        {
+            "fieldname": "default_supplier",
+            "label": __("Default Supplier"),
+            "fieldtype": "Link",
+            "options":"Supplier",
+        },
 		{
             "fieldname": "show_item_in_stock",
             "label": __("Show item in stock"),
