@@ -32,10 +32,10 @@ def get_static_columns(filters):
         {"label": _("Valuation Rate"), "fieldname": "valuation_rate", "fieldtype": "Currency", "width": 100},
         {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
         {"label": _(f"WH1 Retail Price {filters.get('wh1_margin')}%"), "fieldname": "wh1_retail_price", "fieldtype": "Currency", "width": 200},
-        {"label": _(f"WH1 Profit {filters.get('wh1_margin')}%"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 150},
+        {"label": _(f"WH1 Profit {filters.get('wh1_margin')}"), "fieldname": "wh1_profit", "fieldtype": "Currency", "width": 150},
         {"label": _(f"WH1 Profit  {filters.get('wh1_margin')}%"), "fieldname": "wh1_profit_per", "fieldtype": "Data", "width": 150},
         {"label": _(f"WH2 Retail Price {filters.get('wh2_margin')}%"), "fieldname": "wh2_retail_price", "fieldtype": "Currency", "width": 200},
-        {"label": _(f"WH2 Profit {filters.get('wh2_margin')}%"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 150},
+        {"label": _(f"WH2 Profit {filters.get('wh2_margin')}"), "fieldname": "wh2_profit", "fieldtype": "Currency", "width": 150},
         {"label": _(f"WH2 Profit  {filters.get('wh2_margin')}%"), "fieldname": "wh2_profit_per", "fieldtype": "Data", "width": 150},
     ]
 
