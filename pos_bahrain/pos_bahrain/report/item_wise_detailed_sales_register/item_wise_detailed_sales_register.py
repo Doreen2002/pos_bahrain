@@ -62,6 +62,7 @@ def _execute(filters=None, additional_table_columns=None, additional_query_colum
 			'item_group': item_record.item_group if item_record else d.item_group,
 			'description': d.description,
 			'invoice': d.parent,
+			'barcode':d.barcode,
 			'posting_date': d.posting_date,
 			'customer': d.customer,
 			'customer_name': customer_record.customer_name,
@@ -202,6 +203,13 @@ def get_columns(additional_table_columns, filters):
 			'fieldtype': 'Link',
 			'options': 'Sales Invoice',
 			'width': 120
+		},
+		{
+			'fieldname': 'barcode',
+			'label': _('Barcode'),
+			'fieldtype': 'Data',
+			'width': 120,
+			
 		},
 		{
 			'label': _('Posting Date'),
@@ -418,6 +426,9 @@ def get_conditions(filters):
 
 	if filters.get("pb_discount_percentage"):
 		conditions +=  """and ifnull(`tabSales Invoice Item`.discount_percentage, '') = %(pb_discount_percentage)s"""
+
+	if filters.get("barcode"):
+		conditions+="""and ifnull(`tabSales Invoice Item`.barcode, '') = %(barcode)s"""
 
 	if filters.get("supplier"):
 		conditions += """ AND EXISTS (
