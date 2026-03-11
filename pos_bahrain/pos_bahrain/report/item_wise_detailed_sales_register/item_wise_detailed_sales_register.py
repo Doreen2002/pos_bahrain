@@ -481,7 +481,7 @@ def get_items(filters, additional_query_columns):
             `tabSales Invoice Item`.base_net_rate, `tabSales Invoice Item`.base_net_amount,
             `tabSales Invoice`.customer_name, `tabSales Invoice`.customer_group, `tabSales Invoice Item`.so_detail,
             `tabItem Default`.default_supplier as supplier,
-            `tabSales Invoice`.update_stock, `tabSales Invoice Item`.uom, `tabSales Invoice Item`.qty {0},
+            `tabSales Invoice`.update_stock, `tabSales Invoice Item`.uom,`tabSales Invoice Item`.barcode AS barcode, `tabSales Invoice Item`.qty {0},
             (SELECT MAX(ip.price_list_rate) FROM `tabItem Price` ip
 			WHERE ip.item_code = `tabSales Invoice Item`.item_code
 			AND ip.price_list = 'Standard Buying') AS buying_price,
