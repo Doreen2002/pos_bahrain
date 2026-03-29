@@ -62,6 +62,7 @@ def _execute(filters=None, additional_table_columns=None, additional_query_colum
 			'item_group': item_record.item_group if item_record else d.item_group,
 			'description': d.description,
 			'invoice': d.parent,
+			'barcode':d.barcode,
 			'posting_date': d.posting_date,
 			'customer': d.customer,
 			'customer_name': customer_record.customer_name,
@@ -202,6 +203,13 @@ def get_columns(additional_table_columns, filters):
 			'fieldtype': 'Link',
 			'options': 'Sales Invoice',
 			'width': 120
+		},
+		{
+			'fieldname': 'barcode',
+			'label': _('Barcode'),
+			'fieldtype': 'Data',
+			'width': 120,
+			
 		},
 		{
 			'label': _('Posting Date'),
@@ -419,6 +427,9 @@ def get_conditions(filters):
 	if filters.get("pb_discount_percentage"):
 		conditions +=  """and ifnull(`tabSales Invoice Item`.discount_percentage, '') = %(pb_discount_percentage)s"""
 
+	if filters.get("barcode"):
+		conditions+="""and ifnull(`tabSales Invoice Item`.barcode, '') = %(barcode)s"""
+
 	if filters.get("supplier"):
 		conditions += """ AND EXISTS (
 			SELECT name FROM `tabItem Default`
@@ -470,7 +481,7 @@ def get_items(filters, additional_query_columns):
             `tabSales Invoice Item`.base_net_rate, `tabSales Invoice Item`.base_net_amount,
             `tabSales Invoice`.customer_name, `tabSales Invoice`.customer_group, `tabSales Invoice Item`.so_detail,
             `tabItem Default`.default_supplier as supplier,
-            `tabSales Invoice`.update_stock, `tabSales Invoice Item`.uom, `tabSales Invoice Item`.qty {0},
+            `tabSales Invoice`.update_stock, `tabSales Invoice Item`.uom,`tabSales Invoice Item`.barcode AS barcode, `tabSales Invoice Item`.qty {0},
             (SELECT MAX(ip.price_list_rate) FROM `tabItem Price` ip
 			WHERE ip.item_code = `tabSales Invoice Item`.item_code
 			AND ip.price_list = 'Standard Buying') AS buying_price,

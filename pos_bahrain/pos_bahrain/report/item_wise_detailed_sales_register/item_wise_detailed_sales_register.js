@@ -89,6 +89,11 @@ frappe.query_reports["Item wise detailed sales register"] = {
 			"label": __("Show buying price"),
 			"fieldname": "show_buying_price",
 			"fieldtype": "Check"
+		},
+		{
+			"label": __("barcode"),
+			"fieldname": "barcode",
+			"fieldtype": "Data"
 		}
 	],
 	"formatter": function(value, row, column, data, default_formatter) {
