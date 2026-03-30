@@ -8,18 +8,10 @@
  "field_order": [
   "country",
   "column_break_dbb7i",
-  "region",
   "column_break_gjxho",
   "currency"
  ],
  "fields": [
-  {
-   "fieldname": "region",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Region",
-   "options": "Region"
-  },
   {
    "fieldname": "column_break_dbb7i",
    "fieldtype": "Column Break"
@@ -46,12 +38,13 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-21 13:56:56.503054",
+ "modified": "2026-03-30 11:07:49.143996",
  "modified_by": "Administrator",
  "module": "Pos Bahrain",
  "name": "Target Child",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
