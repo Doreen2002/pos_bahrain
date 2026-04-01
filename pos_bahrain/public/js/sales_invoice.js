@@ -493,7 +493,7 @@ method:"pos_bahrain.doc_events.sales_invoice.apply_discount_on_transaction",
 args:{"doc":frm.doc},
 callback(r)
 {
-console.log(r.message)
+
 if (r.message) {
 
 frm.set_value("apply_discount_on", r.message['apply_discount_on']);
