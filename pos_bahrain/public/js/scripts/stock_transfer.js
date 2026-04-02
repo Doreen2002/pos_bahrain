@@ -39,12 +39,7 @@ async function calc_and_set_total_amount(frm, cdt, cdn) {
 }
 
 
-async function set_source_branch(frm) {
-  const { message: branch } = await frappe.call({
-    method: 'pos_bahrain.api.customer.get_user_branch',
-  });
-  frm.set_value('source_branch', branch);
-}
+
 
 
 function render_dashboard_data(frm) {
@@ -170,16 +165,7 @@ function toggle_incoming_datetime(frm) {
 }
 
 
-async function toggle_cancel_action(frm) {
-  const { message: branch } = await frappe.call({
-    method: 'pos_bahrain.api.customer.get_user_branch',
-  });
-  frm.page.actions
-    .find('a.grey-link:contains("Cancel")')
-    .toggle(
-      frm.doc.workflow_state === 'In Transit' && branch !== frm.doc.target_branch
-    );
-}
+
 
 
 export default {
@@ -187,7 +173,6 @@ export default {
   refresh: function(frm) {
     if (frm.doc.__islocal) {
       frm.set_value('outgoing_datetime', frappe.datetime.now_datetime());
-      set_source_branch(frm);
     }
     toggle_incoming_datetime(frm);
     render_dashboard_data(frm);

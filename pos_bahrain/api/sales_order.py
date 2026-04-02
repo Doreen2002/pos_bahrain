@@ -10,8 +10,6 @@ from frappe.model.workflow import get_workflow, apply_workflow
 from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
 from functools import partial
 from toolz import compose, keyfilter, cons, identity, unique, concat
-
-from optic_store.api.customer import get_user_branch
 from optic_store.utils import mapf, filterf, key_by
 
 @frappe.whitelist()
@@ -29,7 +27,4 @@ def invoice_qol(
         else None
     )
 
-@frappe.whitelist()
-def get_warehouse(branch=None):
-    name = branch or get_user_branch()
-    return frappe.db.get_value("Branch", name, "warehouse") if name else None
+

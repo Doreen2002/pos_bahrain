@@ -11,7 +11,6 @@ from functools import partial
 from toolz import merge, compose, concatv
 
 from pos_bahrain.api.branch import get_branch_qty
-from pos_bahrain.api.customer import get_user_branch
 from pos_bahrain.utils import pick, sum_by, mapf, filterf, concatvf
 
 DISPATCH = "Dispatch"
@@ -29,7 +28,6 @@ def showReceive(branch):
 
 class StockTransfer(Document):
     def validate(self):
-        user_branch = get_user_branch()
         # if not _is_sys_mgr() and self.source_branch != user_branch:
         #     frappe.throw(
         #         _(
