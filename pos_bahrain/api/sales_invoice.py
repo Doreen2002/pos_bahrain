@@ -8,6 +8,29 @@ from frappe.utils import flt
 # Set Cost Center = Supplier
 # Date = Date & Supplier Invoice Date
 
+@frappe.whitelist()
+def get_sales_invoice_details_on_posting_date(from_date, to_date):
+    if not from_date or not to_date:
+        frappe.throw("Please provide both From Date and To Date.")
+    from_date = str(frappe.utils.getdate(from_date))
+    to_date = str(frappe.utils.getdate(to_date))
+    sales_invoice = frappe.db.get_all(
+        "Sales Invoice",    
+        filters={
+            "posting_date": ["between", [from_date, to_date]],
+            "docstatus": 1
+        },
+        fields=["*"]
+    )
+    for invoice in sales_invoice:
+        invoice['items'] = frappe.db.get_all(
+            "Sales Invoice Item",
+            filters={"parent": invoice.name},
+            fields=["*"]    
+        )
+    return sales_invoice
+
+
 
 @frappe.whitelist()
 def make_purchase_invoice(source_name, target_doc=None):
