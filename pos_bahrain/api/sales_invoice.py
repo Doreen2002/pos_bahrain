@@ -20,13 +20,13 @@ def get_sales_invoice_details_on_posting_date(from_date, to_date):
             "posting_date": ["between", [from_date, to_date]],
             "docstatus": 1
         },
-        fields=["*"]
+        fields=["name", "customer", "posting_date", "grand_total", "discount_amount", "total_taxes_and_charges",  "is_return", "remarks"]
     )
     for invoice in sales_invoice:
         invoice['items'] = frappe.db.get_all(
             "Sales Invoice Item",
             filters={"parent": invoice.name},
-            fields=["*"]    
+            fields=["item_code", "description", "item_name", "item_group", "qty", "uom", "conversion_factor", "rate", "base_amount", "discount_amount", "net_amount"]    
         )
     return sales_invoice
 
