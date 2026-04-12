@@ -94,7 +94,7 @@ def _sle_clauses(args):
             "sle.docstatus = 1",
             "sle.company = %(company)s",
             "sle.posting_date <= %(query_date)s",
-            "IFNULL(sle.batch_no, '') != ''",
+            "IFNULL(COALESCE(sbe.batch_no, sle.batch_no), '') != ''",
             "id.company = %(company)s",
         ],
         ["sle.warehouse in %(warehouse)s"] if args.get("warehouse") else [],
@@ -105,10 +105,16 @@ def _get_data(args, keys):
     sles = frappe.db.sql(
         """
             SELECT
-                sle.batch_no AS batch_no,
+                COALESCE(sbe.batch_no, sle.batch_no) AS batch_no,
                 sle.item_code AS item_code,
                 sle.warehouse AS warehouse,
-                SUM(sle.actual_qty) AS qty,
+                SUM(
+                    CASE
+                        WHEN sle.serial_and_batch_bundle IS NOT NULL
+                        THEN sbe.qty
+                        ELSE sle.actual_qty
+                    END
+                ) AS qty,   
                 i.stock_uom AS stock_uom,
                 i.item_name AS item_name,
                 i.brand AS brand,
@@ -119,10 +125,12 @@ def _get_data(args, keys):
             FROM `tabStock Ledger Entry` AS sle
             LEFT JOIN `tabItem` AS i ON
                 i.item_code = sle.item_code
+            LEFT JOIN `tabSerial and Batch Entry` AS sbe ON
+                sbe.parent = sle.serial_and_batch_bundle
             LEFT JOIN `tabItem Default` AS id ON
                 id.parent = i.name
             LEFT JOIN `tabBatch` AS b ON
-                b.batch_id = sle.batch_no
+                b.batch_id = COALESCE(sbe.batch_no, sle.batch_no)
             LEFT JOIN `tabItem Price` AS p1 ON
                 {p1_clauses}
                 AND p1.price_list = %(price_list1)s
@@ -130,7 +138,7 @@ def _get_data(args, keys):
                 {p2_clauses}
                 AND p2.price_list = %(price_list2)s
             WHERE {sle_clauses}
-            GROUP BY sle.batch_no, sle.warehouse
+            GROUP BY COALESCE(sbe.batch_no, sle.batch_no), sle.warehouse
             ORDER BY sle.item_code, sle.warehouse
         """.format(
             sle_clauses=_sle_clauses(args),
