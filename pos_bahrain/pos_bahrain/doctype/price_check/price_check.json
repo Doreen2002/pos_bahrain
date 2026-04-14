@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "creation": "2021-12-02 07:12:38.509634",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -9,6 +10,7 @@
   "price",
   "check",
   "column_break_5",
+  "company",
   "price_check_warehouse_stock"
  ],
  "fields": [
@@ -44,11 +46,19 @@
    "label": "Price Check Warehouse stock",
    "options": "Price Check Warehouse stock",
    "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
+ "grid_page_length": 50,
  "issingle": 1,
- "modified": "2022-09-11 14:23:23.967448",
- "modified_by": "Administrator",
+ "links": [],
+ "modified": "2026-04-13 10:29:08.638285",
+ "modified_by": "doreen@9t9it.com",
  "module": "Pos Bahrain",
  "name": "Price Check",
  "owner": "Administrator",
@@ -65,7 +75,10 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
