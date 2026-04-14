@@ -2,11 +2,11 @@ from __future__ import unicode_literals
 import frappe
 
 @frappe.whitelist()
-def search_barcode(barcode):
+def search_barcode(barcode,company=None):
     item_data = search_serial_or_batch_or_barcode_number(barcode)
     # print("/////////",stock)
     if item_data != 0:
-        price_and_name = get_price(item_data)
+        price_and_name = get_price(item_data, company)
         if price_and_name != 0:
             item_name = frappe.db.sql("""SELECT item_name FROM `tabItem`
                 WHERE item_code = '%(item_code)s'"""%{"item_code": item_data['item_code']})[0][0]
@@ -67,8 +67,14 @@ def search_serial_or_batch_or_barcode_number(search_value):
 
     return 0  
 
-def get_price(item_data):
-    price_list = frappe.db.get_single_value("Price Checker API Settings", "price_list")
+def get_price(item_data, company=None):
+    price_list = ''
+    filters={"parent": item_data['item_code']}
+    if company:
+        filters["company"] = company
+    item_defaults = frappe.db.get_all("Item Default", filters=filters, fields=["company", "default_price_list"])
+    if item_defaults != []:
+        price_list = item_defaults[0]['default_price_list']
     def get_price_from_price_list(item_data, price_list):
         price_data = frappe.db.sql("""SELECT
                             price_list_rate
