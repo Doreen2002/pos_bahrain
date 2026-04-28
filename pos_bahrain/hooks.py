@@ -28,6 +28,7 @@ app_include_js = [
     "assets/pos_bahrain/js/reports/vat_on_purchase_per_gcc.js",
 	"assets/pos_bahrain/js/reports/vat_return.js",
 	"assets/pos_bahrain/js/scripts/barcode_print.js",
+	"assets/pos_bahrain/js/scripts/extensions/hide_sales_return.js",
     
 	
 
