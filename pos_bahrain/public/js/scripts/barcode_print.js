@@ -131,7 +131,11 @@ pos_bahrain.scripts.barcode_print = {
       frm.refresh();
     }
   },
-  scan_barcode,
+  scan_barcode:function(frm) {
+    pos_bahrain.scripts.extensions.scan_barcode(frm);
+    cur_frm.refresh();
+
+  },
   set_warehouse: function(frm) {
     frm.doc.items.forEach(({ doctype: cdt, name: cdn }) => {
       frappe.model.set_value(cdt, cdn, 'warehouse', frm.doc.set_warehouse);

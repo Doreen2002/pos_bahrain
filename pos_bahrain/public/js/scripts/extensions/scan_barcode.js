@@ -1,4 +1,5 @@
 frappe.provide("pos_bahrain.scripts")
+
 pos_bahrain.scripts.extensions.scan_barcode = async function(frm) {
   const scan_fieldname = ['Purchase Receipt'].includes(frm.doc.doctype)
     ? 'pb_scan_barcode'
@@ -13,7 +14,7 @@ pos_bahrain.scripts.extensions.scan_barcode = async function(frm) {
   if (search_value) {
     const { message: data } = await frappe.call({
       method:
-        'erpnext.selling.page.point_of_sale.point_of_sale.search_serial_or_batch_or_barcode_number',
+        'erpnext.selling.page.point_of_sale.point_of_sale.search_for_serial_or_batch_or_barcode_number',
       args: { search_value },
     });
     if (!data || Object.keys(data).length === 0) {
