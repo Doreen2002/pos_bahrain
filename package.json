@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/f-9t9it/pos_bahrain/issues"
   },
-  "homepage": "https://github.com/f-9t9it/pos_bahrain#readme"
+  "homepage": "https://github.com/f-9t9it/pos_bahrain#readme",
+  "dependencies": {
+    "jsbarcode": "^3.12.3"
+  }
 }
