@@ -11,6 +11,9 @@ import frappe
 
 class POSBahrainSettings(Document):
     def on_update(self):
+        if self.hide_pick_serial_and_batch_button:
+            make_property_setter("Sales Invoice Item", "pick_serial_and_batch", "hidden", 1, "Check")
+            make_property_setter("Sales Invoice Item", "serial_and_batch_bundle", "hidden", 1, "Check")
         if(self.add_pos_profile_and_branch_to_payment_entry):
             make_property_setter("Payment Entry", "pb_pos_profile", "hidden", 0, "Check")
             make_property_setter("Payment Entry", "pb_branch", "hidden", 0, "Check")
