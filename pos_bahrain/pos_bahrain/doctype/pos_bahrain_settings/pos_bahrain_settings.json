@@ -78,6 +78,8 @@
   "column_break_62",
   "customer",
   "disable_serial_no_and_batch_selector",
+  "serial_batch_item_settings_section",
+  "hide_pick_serial_and_batch_button",
   "incemtive_slab_section",
   "incentive_slab"
  ],
@@ -517,11 +519,22 @@
    "fieldname": "validate_duplicate_supplier_invoice_numbers",
    "fieldtype": "Check",
    "label": "Validate Duplicate Supplier Invoice Numbers (Purchase Invoice)"
+  },
+  {
+   "fieldname": "serial_batch_item_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Serial & Batch Item Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_pick_serial_and_batch_button",
+   "fieldtype": "Check",
+   "label": "Hide Pick Serial and Batch Button"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-01-05 10:56:54.292964",
+ "modified": "2026-05-11 11:39:46.302229",
  "modified_by": "Administrator",
  "module": "Pos Bahrain",
  "name": "POS Bahrain Settings",
