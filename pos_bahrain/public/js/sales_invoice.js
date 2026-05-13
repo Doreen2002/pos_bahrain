@@ -163,7 +163,10 @@ function get_pricing_rule_percent(frm, cdt, cdn)
 {
   var d = locals[cdt][cdn];
   var item_code = d.item_code;
-  frappe.call(
+
+  if(item_code)
+  {
+    frappe.call(
     {
       method: "pos_bahrain.doc_events.sales_invoice.get_pricing_rule_discount",
       args:{'item':item_code},
@@ -179,6 +182,9 @@ function get_pricing_rule_percent(frm, cdt, cdn)
       }
     }
   )
+  }
+
+  
 }
 
 function check_duplicate(frm) {
