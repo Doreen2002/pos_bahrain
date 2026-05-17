@@ -40,6 +40,16 @@ def execute(filters=None):
 			"fieldtype": "Int",
 		},
 		{
+			"fieldname": "in_qty",
+			"label": "In Quantity",
+			"fieldtype": "Int",
+		},
+		{
+			"fieldname": "balance_qty",
+			"label": "Balance Quantity",
+			"fieldtype": "Int",
+		},
+		{
 			"fieldname": "expired_qty",
 			"label": "Expired Quantity",
 			"fieldtype": "Int",
@@ -84,12 +94,22 @@ def execute(filters=None):
 
         COALESCE(SUM(
             CASE 
-                WHEN sle.voucher_type = 'Stock Entry' 
+                WHEN sle.voucher_type = 'Stock Entry' and sle.actual_qty < 0
                 THEN ABS(sle.actual_qty)
                 ELSE 0 
             END
         ), 0) AS out_qty,
 
+		COALESCE(SUM(
+            CASE 
+                WHEN sle.voucher_type = 'Stock Entry' and sle.actual_qty > 0
+                THEN ABS(sle.actual_qty )
+                ELSE 0 
+            END
+        ), 0) AS in_qty,
+
+
+		b.actual_qty AS balance_qty,
         0 AS expired_qty,
 
         COALESCE(SUM(ABS(sle.actual_qty)), 0) AS current_stock
@@ -104,6 +124,9 @@ def execute(filters=None):
 
     LEFT JOIN `tabStock Ledger Entry` sle 
         ON sle.item_code = i.item_code
+
+	LEFT JOIN `tabBin` b
+		ON b.item_code = i.item_code
 
 	WHERE sle.posting_date BETWEEN %(startdate)s AND %(end_date)s {conditions}
 
