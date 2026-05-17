@@ -52,7 +52,13 @@ def execute(filters=None):
 
 
 	]
-
+	conditions = ""
+	if filters.get("supplier"):
+		conditions += " AND sp.name IN %(supplier)s"
+	if filters.get("warehouse"):
+		conditions += " AND sle.warehouse = %(warehouse)s"
+	if filters.get("item_code"):
+		conditions += " AND i.item_code = %(item_code)s"
 	query = frappe.db.sql(
     """
     SELECT 
@@ -62,7 +68,7 @@ def execute(filters=None):
 
         COALESCE(SUM(
             CASE 
-                WHEN sle.voucher_type = 'Purchase Receipt' 
+                WHEN sle.voucher_type = 'Purchase Receipt'  or sle.voucher_type = 'Purchase Invoice'
                 THEN ABS(sle.actual_qty)
                 ELSE 0 
             END
@@ -99,14 +105,17 @@ def execute(filters=None):
     LEFT JOIN `tabStock Ledger Entry` sle 
         ON sle.item_code = i.item_code
 
-	WHERE sle.posting_date BETWEEN %(startdate)s AND %(end_date)s
+	WHERE sle.posting_date BETWEEN %(startdate)s AND %(end_date)s {conditions}
 
     GROUP BY 
         sp.name, i.item_code, i.item_name
-    """,
+    """.format(conditions=conditions),
     {
         "startdate": filters.get("start_date"),
-        "end_date": filters.get("end_date")
+        "end_date": filters.get("end_date"),
+		"item_code": filters.get("item_code"),
+		"supplier": filters.get("supplier"),
+		"warehouse": filters.get("warehouse")
     },
     as_dict=True,
 )
