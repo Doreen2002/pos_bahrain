@@ -326,6 +326,8 @@ def fetch_item_from_supplier_part_no(supplier, supplier_part_no):
     )
     return item[0] if item else None
 
+def custom_validate_item_template(self):
+    pass
 
 @frappe.whitelist()
 def query_uom(doctype, txt, searchfield, start, page_len, filters):
