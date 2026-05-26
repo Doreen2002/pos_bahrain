@@ -545,3 +545,9 @@ def custom_payment_on_recurring(self, reference_doc, auto_repeat_doc):
     self.clearance_date = None
 	
 PaymentEntry.on_recurring = custom_payment_on_recurring
+
+import erpnext.stock.doctype.item_price.item_price as doc_item_price
+
+import pos_bahrain.api.item as pos_bahrain_item
+
+doc_item_price.ItemPrice.validate_item_template = pos_bahrain_item.custom_validate_item_template
