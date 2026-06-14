@@ -100,6 +100,7 @@ doctype_js = {
     "Print Format": "public/js/print_format.js",
 	"Stock Reconciliation": "public/js/stock_reconciliation.js",
 	"Batch":"public/js/batch.js",
+	"Item Variant Settings":"public/js/item_variant_settings.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 doctype_tree_js = {"Warehouse" : "public/js/warehouse_tree.js"}
