@@ -2,12 +2,15 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('POS Closing Voucher', {
-  onload: async function (frm) {
+  before_save: async function (frm) {
     const { period_to = frappe.datetime.now_datetime() } =
       frappe.route_options || {};
     if (frm.doc.docstatus === 0 && !frm.doc.period_to) {
       frm.set_value('period_to', period_to);
     }
+  },
+  onload: async function (frm) {
+    
     [
       'payments',
       'invoices',
