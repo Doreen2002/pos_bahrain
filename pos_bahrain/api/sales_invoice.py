@@ -2,6 +2,7 @@ import frappe
 from frappe.model.mapper import get_mapped_doc
 from erpnext.controllers.accounts_controller import get_advance_payment_entries,get_advance_journal_entries
 from frappe.utils import flt
+from frappe.utils import datetime
 # from erpnext.accounts.doctype.payment_entry.payment_entry import build_gl_map
 
 # Customer = Cost Center & Set Cost Center
@@ -12,14 +13,15 @@ from frappe.utils import flt
 def get_sales_invoice_details_on_posting_date(from_date, to_date):
     if not from_date or not to_date:
         frappe.throw("Please provide both From Date and To Date.")
-    from_date = str(frappe.utils.getdate(from_date))
-    to_date = str(frappe.utils.getdate(to_date))
+    from_date = datetime.datetime.strptime(from_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+    to_date = datetime.datetime.strptime(to_date, "%d-%m-%Y").strftime("%Y-%m-%d")
     sales_invoice = frappe.db.get_all(
         "Sales Invoice",    
-        filters={
-            "posting_date": ["between", [from_date, to_date]],
-            "docstatus": 1
-        },
+         filters = [ 
+            ["posting_date", ">=", from_date],
+            ["posting_date", "<=", to_date],
+            ["docstatus", "=", "1"]
+        ],  
         fields=["name", "customer", "customer_name", "posting_date", "grand_total", "discount_amount", "total_taxes_and_charges",  "is_return", "set_warehouse", "set_target_warehouse", "remarks"]
     )
     for invoice in sales_invoice:
