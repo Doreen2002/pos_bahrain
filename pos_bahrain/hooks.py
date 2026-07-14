@@ -281,6 +281,7 @@ fixtures = [
                     "Sales Invoice-mobile_no",
                     "Sales Invoice-phone",
                     "Sales Invoice-email_id",
+					"Stock Entry-custom_total_qty"
                 ],
             ],
         ],

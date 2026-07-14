@@ -1,6 +1,14 @@
 // Copyright (c) 2018, 	9t9it and contributors
 // For license information, please see license.txt
 
+function updateTotalQty(frm)
+{
+  let totalQty = 0;
+  (frm.doc.items || []).forEach((row)=>{
+    totalQty += flt(row.qty)
+  })
+  frm.set_value("custom_total_qty", totalQty);
+}
 
 frappe.ui.form.off('Stock Entry Detail', 'item_code');
 frappe.ui.form.on('Stock Entry Detail', {
@@ -13,6 +21,9 @@ frappe.ui.form.on('Stock Entry Detail', {
   t_warehouse: function (frm, cdt, cdn) {
     _set_cost_center('t_warehouse', cdt, cdn);
   },
+  qty: function(frm, cdt, cdn) {
+    updateTotalQty(frm);
+  }
 });
 
 
@@ -20,6 +31,10 @@ frappe.ui.form.on('Stock Entry', {
   refresh: function (frm) {
     _set_repack_warehouses_read_only(frm);
   },
+  before_save: function(frm)
+  {
+    updateTotalQty(frm);
+  }
 });
 
 
