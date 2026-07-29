@@ -341,10 +341,14 @@
  "modified_by": "Administrator",
  "module": "Pos Bahrain",
  "name": "Pos Bahrain",
+ "number_cards": [],
  "onboarding": "",
  "owner": "Administrator",
- "pin_to_bottom": 0,
- "pin_to_top": 0,
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 11.0,
  "shortcuts": [],
- "shortcuts_label": ""
+ "title": "Pos Bahrain"
 }
