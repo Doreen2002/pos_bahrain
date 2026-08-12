@@ -281,7 +281,9 @@ fixtures = [
                     "Sales Invoice-mobile_no",
                     "Sales Invoice-phone",
                     "Sales Invoice-email_id",
-					"Stock Entry-custom_total_qty"
+					"Stock Entry-custom_total_qty",
+					"Stock Entry-custom_difference_account_",
+					"Stock Entry-custom_difference_acount"
                 ],
             ],
         ],
