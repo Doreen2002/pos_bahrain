@@ -10,10 +10,21 @@ function updateTotalQty(frm)
   frm.set_value("custom_total_qty", totalQty);
 }
 
+function setDifferenceAccount(frm, cdt, cdn) {
+  setTimeout(() => {
+  const row = frappe.get_doc(cdt, cdn);
+
+  row.expense_account = frm.doc.custom_difference_acount;
+
+  frm.refresh_field("items");
+}, 100);
+}
+
 frappe.ui.form.off('Stock Entry Detail', 'item_code');
 frappe.ui.form.on('Stock Entry Detail', {
   item_code: function(frm, cdt, cdn){
     stock_entry_item_code(frm, cdt, cdn)
+    setDifferenceAccount(frm, cdt, cdn);
   },
   s_warehouse: function (frm, cdt, cdn) {
     _set_cost_center('s_warehouse', cdt, cdn);
@@ -23,6 +34,10 @@ frappe.ui.form.on('Stock Entry Detail', {
   },
   qty: function(frm, cdt, cdn) {
     updateTotalQty(frm);
+  },
+  items_add: function(frm, cdt, cdn)
+  {
+    setDifferenceAccount(frm, cdt, cdn)
   }
 });
 
@@ -34,6 +49,16 @@ frappe.ui.form.on('Stock Entry', {
   before_save: function(frm)
   {
     updateTotalQty(frm);
+  },
+  custom_difference_acount(frm) {
+    if (frm.doc.custom_difference_acount) {
+        (frm.doc.items || []).forEach(row => {
+            row.expense_account = frm.doc.custom_difference_acount;
+        });
+
+          frm.refresh_field("items");
+      }
+     
   }
 });
 
