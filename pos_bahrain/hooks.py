@@ -103,7 +103,7 @@ doctype_js = {
 	"Item Variant Settings":"public/js/item_variant_settings.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-doctype_tree_js = {"Warehouse" : "public/js/warehouse_tree.js"}
+doctype_tree_js = {"Warehouse" : "public/js/warehouse_tree.js", "Account":"public/js/account_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 fixtures = [
@@ -283,7 +283,8 @@ fixtures = [
                     "Sales Invoice-email_id",
 					"Stock Entry-custom_total_qty",
 					"Stock Entry-custom_difference_account_",
-					"Stock Entry-custom_difference_acount"
+					"Stock Entry-custom_difference_acount",
+                    "Account-custom_account_name_arabic"
                 ],
             ],
         ],
