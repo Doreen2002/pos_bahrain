@@ -19,6 +19,8 @@
   "enable_pos_log",
   "validate_duplicate_supplier_invoice_numbers",
   "default_supplier_items_limit",
+  "section_break_emnp",
+  "enable_multilingual",
   "price_list_section",
   "apply_offer_pricelist",
   "column_break_3",
@@ -530,11 +532,21 @@
    "fieldname": "hide_pick_serial_and_batch_button",
    "fieldtype": "Check",
    "label": "Hide Pick Serial and Batch Button"
+  },
+  {
+   "fieldname": "section_break_emnp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_multilingual",
+   "fieldtype": "Check",
+   "label": "Enable Multilingual"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-05-11 11:39:46.302229",
+ "modified": "2026-08-23 16:04:56.669698",
  "modified_by": "Administrator",
  "module": "Pos Bahrain",
  "name": "POS Bahrain Settings",
