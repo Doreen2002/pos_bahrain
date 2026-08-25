@@ -29,7 +29,8 @@ frappe.ui.form.on('Sales Invoice', {
       };
     };
   },
-	pos_profile: function(frm) { set_series(frm); },
+  onload_post_render:function(frm) {  setTimeout(() => { set_series(frm); }, 500); },
+	pos_profile: function(frm) {  setTimeout(() => { set_series(frm); }, 500);  },
   is_pos: function(frm) { 
     setTimeout(() => { set_series(frm); }, 500); 
   },
